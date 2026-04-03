@@ -108,8 +108,8 @@
     "commit-msg": "npx --no-install commitlint --edit $1"
   },
   "lint-staged": {
-    "!(*.qoder)*.{js,ts,vue,json,html,css}": "eslint --fix",
-    "*.md": "eslint --fix --ignore-pattern .qoder/"
+    "src/**/*.{js,ts,vue}": "eslint --fix",
+    "*.{js,ts,json,html,css}": "eslint --fix"
   },
   "config": {
     "commitizen": {
