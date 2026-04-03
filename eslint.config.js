@@ -3,6 +3,9 @@ import antfu from '@antfu/eslint-config'
 
 export default antfu({
   unocss: true,
+  ignores: [
+    '.qoder/**',
+  ],
   stylistic: {
     indent: 2, // 4, or 'tab'
     quotes: 'single', // or 'double'

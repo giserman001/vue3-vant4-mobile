@@ -97,3 +97,104 @@ export function hexToRgba(hex: string, opacity: number) {
         })`
     : hex
 }
+
+/**
+ * Check if device is iOS
+ * @returns True if iOS
+ */
+export function isIos(): boolean {
+  const userAgent = navigator.userAgent
+  return !!userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)
+}
+
+/**
+ * Get relative time format
+ * @param unixtime - Unix timestamp or date string
+ * @returns Relative time string
+ */
+export function getDateTimeFormat(unixtime: string): string {
+  const currTime = Date.parse(new Date().toString())
+  // 兼容 ios
+  const winTime = new Date(isIos() ? unixtime.replace(/-/g, '/') : unixtime).getTime()
+  let time = Number.parseInt(String(currTime)) / 1000 - Number.parseInt(String(winTime)) / 1000
+  time = Math.abs(time)
+  // 少于一分钟
+  if (time < 60) {
+    return '1分钟前'
+  }
+  // 秒转分钟
+  const minutes = time / 60
+  if (minutes < 60) {
+    return `${Math.floor(minutes)}分钟前`
+  }
+  // 秒转小时
+  const hours = time / 3600
+  if (hours < 24) {
+    return `${Math.floor(hours)}小时前`
+  }
+  // 秒转天数
+  const days = time / 3600 / 24
+  if (days < 30) {
+    return `${Math.floor(days)}天前`
+  }
+  // 秒转月
+  const months = time / 3600 / 24 / 30
+  if (months < 12) {
+    return `${Math.floor(months)}月前`
+  }
+  // 秒转年
+  const years = time / 3600 / 24 / 30 / 12
+  return `${Math.floor(years)}年前`
+}
+
+/**
+ * Get time object from minutes offset
+ * @param minutes - Minutes offset
+ * @param currTime - Current time
+ * @returns Time object
+ */
+export function getsomeTime(minutes: number, currTime: Date = new Date()) {
+  const nowDate = new Date(currTime)
+  nowDate.setTime(nowDate.getTime() + minutes * 60000)
+  const time = [
+    nowDate.getFullYear(),
+    two(+nowDate.getMonth() + 1),
+    two(nowDate.getDate()),
+    two(nowDate.getHours()),
+    two(nowDate.getMinutes()),
+    two(nowDate.getSeconds()),
+  ]
+  return {
+    year: time[0],
+    mon: time[1],
+    day: time[2],
+    hour: time[3],
+    min: time[4],
+    sec: time[5],
+    date: `${time[0]}-${time[1]}-${time[2]} ${time[3]}:${time[4]}:${time[5]}`,
+  }
+}
+
+/**
+ * Get time object
+ * @param minutes - Minutes offset
+ * @returns Time object
+ */
+export function getTime(minutes: number) {
+  const timeData = getsomeTime(-minutes)
+  return {
+    year: timeData.year,
+    day: `${timeData.mon}/${timeData.day}`,
+    dateStr: timeData.date,
+    timeAgo: getDateTimeFormat(timeData.date),
+  }
+}
+
+/**
+ * Format number to two digits
+ * @param num - Number to format
+ * @returns Formatted string
+ */
+function two(num: number): string {
+  return num < 10 ? `0${num}` : `${num}`
+}

@@ -42,3 +42,12 @@ export const LoginRoute: RouteRecordRaw = {
     title: '登录',
   },
 }
+
+export const tabBarRoute: RouteRecordRaw = {
+  path: '/tabBar',
+  name: 'TabBar',
+  component: () => import('@/views/tabBar/index.vue'),
+  meta: {
+    title: 'tabbar',
+  },
+}
