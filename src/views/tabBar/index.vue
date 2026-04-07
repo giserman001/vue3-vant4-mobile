@@ -13,7 +13,26 @@
       </div>
       <div class="w-60px flex items-center justify-end gap-20px">
         <van-icon name="search" size="22" />
-        <van-icon name="add-o" size="22" />
+        <van-icon name="add-o" size="22" @click="showPopup = !showPopup" />
+      </div>
+    </div>
+    <!-- + 号弹出菜单遮罩 -->
+    <div v-if="showPopup" class="fixed inset-0 z-998" @click="showPopup = false" />
+    <!-- + 号弹出菜单 -->
+    <div
+      v-if="showPopup"
+      class="fixed right-12px z-999 rounded-6px bg-[#4c4c4c] py-4px before:absolute before:right-10px before:top-[-10px] before:border-6px before:border-transparent before:border-b-[#4c4c4c] before:border-solid before:content-['']"
+      :style="{ top: 'calc(env(safe-area-inset-top) + 44px)' }"
+    >
+      <div
+        v-for="(item, index) in popupMenus"
+        :key="item.text"
+        class="flex items-center px-20px py-12px"
+        :class="[index !== popupMenus.length - 1 ? 'border-b-[0.5px] border-b-[#666] border-b-solid' : '']"
+        @click="onPopupMenuClick(item.text)"
+      >
+        <div :class="item.icon" class="h-20px w-20px text-[#fff]" />
+        <span class="ml-12px text-15px text-[#fff]">{{ item.text }}</span>
       </div>
     </div>
     <!-- 内容区 -->
@@ -65,6 +84,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useLocalStorage } from '@vueuse/core'
 import { showToast } from 'vant'
 import Wx from './components/wx.vue'
 import Address from './components/address.vue'
@@ -91,7 +111,7 @@ interface TabBarItem {
   }
 }
 
-const current = ref(0) // 当前选中的 tabbar 项，0 表示微信，1 表示通讯录，2 表示发现，3 表示我
+const current = useLocalStorage('tabbar-current', 0)
 
 // navbar 标题
 const navbarTitle = computed(() => {
@@ -101,6 +121,21 @@ const navbarTitle = computed(() => {
 
 function change(index: number) {
   current.value = index
+}
+
+// + 号弹出菜单
+const showPopup = ref(false)
+
+const popupMenus = [
+  { icon: 'i-wx-group-chat', text: '发起群聊' },
+  { icon: 'i-wx-add-friend', text: '添加朋友' },
+  { icon: 'i-wx-scan', text: '扫一扫' },
+  { icon: 'i-wx-payment', text: '收付款' },
+]
+
+function onPopupMenuClick(text: string) {
+  showPopup.value = false
+  showToast(text)
 }
 
 const tabbars = ref<TabBarItem[]>([

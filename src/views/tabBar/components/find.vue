@@ -1,9 +1,9 @@
 <template>
   <div class="bg-[#ededed]">
     <!-- 第一组：朋友圈 -->
-    <div class="bg-white">
+    <div class="bg-white" @click="router.push('/circleFriend')">
       <div class="flex items-center pl-12px">
-        <img src="@/assets/images/icon/1.png" alt="" class="mr-16px h-24px w-24px">
+        <div class="i-wx-pyq mr-16px h-24px w-24px" />
         <div class="h-56px flex flex-1 items-center pr-12px">
           <span class="flex-1 text-17px text-[#000]">朋友圈</span>
           <div class="relative mr-8px">
@@ -19,14 +19,14 @@
     <div class="h-8px" />
     <div class="bg-white">
       <div class="flex items-center pl-12px">
-        <img src="@/assets/images/icon/2.png" alt="" class="mr-16px h-24px w-24px">
+        <div class="i-wx-sph mr-16px h-24px w-24px" />
         <div class="h-56px flex flex-1 items-center border-b border-b-[#ECECEC] pr-12px">
           <span class="flex-1 text-17px text-[#000]">视频号</span>
           <van-icon name="arrow" color="#C8C8C8" size="16" />
         </div>
       </div>
       <div class="flex items-center pl-12px">
-        <img src="@/assets/images/icon/10.png" alt="" class="mr-16px h-24px w-24px">
+        <div class="i-wx-live mr-16px h-24px w-24px" />
         <div class="h-56px flex flex-1 items-center pr-12px">
           <span class="flex-1 text-17px text-[#000]">直播</span>
           <van-icon name="arrow" color="#C8C8C8" size="16" />
@@ -38,14 +38,14 @@
     <div class="h-8px" />
     <div class="bg-white">
       <div class="flex items-center pl-12px">
-        <img src="@/assets/images/icon/3.png" alt="" class="mr-16px h-24px w-24px">
+        <div class="i-wx-scan mr-16px h-24px w-24px text-[#3C86E0]" />
         <div class="h-56px flex flex-1 items-center border-b border-b-[#ECECEC] pr-12px">
           <span class="flex-1 text-17px text-[#000]">扫一扫</span>
           <van-icon name="arrow" color="#C8C8C8" size="16" />
         </div>
       </div>
       <div class="flex items-center pl-12px">
-        <img src="@/assets/images/icon/4.png" alt="" class="mr-16px h-24px w-24px">
+        <div class="i-wx-tyt mr-16px h-24px w-24px" />
         <div class="h-56px flex flex-1 items-center pr-12px">
           <span class="flex-1 text-17px text-[#000]">听一听</span>
           <van-icon name="arrow" color="#C8C8C8" size="16" />
@@ -57,14 +57,14 @@
     <div class="h-8px" />
     <div class="bg-white">
       <div class="flex items-center pl-12px">
-        <img src="@/assets/images/icon/5.png" alt="" class="mr-16px h-24px w-24px">
+        <div class="i-wx-kyk mr-16px h-24px w-24px" />
         <div class="h-56px flex flex-1 items-center border-b border-b-[#ECECEC] pr-12px">
           <span class="flex-1 text-17px text-[#000]">看一看</span>
           <van-icon name="arrow" color="#C8C8C8" size="16" />
         </div>
       </div>
       <div class="flex items-center pl-12px">
-        <img src="@/assets/images/icon/11.png" alt="" class="mr-16px h-24px w-24px">
+        <div class="i-wx-sys mr-16px h-24px w-24px" />
         <div class="h-56px flex flex-1 items-center pr-12px">
           <span class="flex-1 text-17px text-[#000]">搜一搜</span>
           <van-icon name="arrow" color="#C8C8C8" size="16" />
@@ -76,7 +76,7 @@
     <div class="h-8px" />
     <div class="bg-white">
       <div class="flex items-center pl-12px">
-        <img src="@/assets/images/icon/12.png" alt="" class="mr-16px h-24px w-24px">
+        <div class="i-wx-fjdr mr-16px h-24px w-24px" />
         <div class="h-56px flex flex-1 items-center pr-12px">
           <span class="flex-1 text-17px text-[#000]">附近的人</span>
           <van-icon name="arrow" color="#C8C8C8" size="16" />
@@ -88,7 +88,7 @@
     <div class="h-8px" />
     <div class="bg-white">
       <div class="flex items-center pl-12px">
-        <img src="@/assets/images/icon/6.png" alt="" class="mr-16px h-24px w-24px">
+        <div class="i-wx-wxyx mr-16px h-24px w-24px" />
         <div class="h-56px flex flex-1 items-center pr-12px">
           <span class="flex-1 text-17px text-[#000]">游戏</span>
           <van-icon name="arrow" color="#C8C8C8" size="16" />
@@ -100,7 +100,7 @@
     <div class="h-8px" />
     <div class="bg-white">
       <div class="flex items-center pl-12px">
-        <img src="@/assets/images/icon/7.png" alt="" class="mr-16px h-24px w-24px">
+        <div class="i-wx-wxxcx mr-16px h-24px w-24px" />
         <div class="h-56px flex flex-1 items-center pr-12px">
           <span class="flex-1 text-17px text-[#000]">小程序</span>
           <van-icon name="arrow" color="#C8C8C8" size="16" />
@@ -111,6 +111,7 @@
 </template>
 
 <script setup lang="ts">
+const router = useRouter()
 </script>
 
 <style lang="less" scoped>

@@ -198,3 +198,36 @@ export function getTime(minutes: number) {
 function two(num: number): string {
   return num < 10 ? `0${num}` : `${num}`
 }
+
+/**
+ * Set meta theme color
+ * @param color - Color value
+ */
+export function setMetaColor(color: string): void {
+  const meta = document.querySelector('meta[name="theme-color"]')
+  if (meta) {
+    meta.setAttribute('content', color)
+  }
+}
+
+// Click outside directive (Vue 3 version)
+export const clickOutSide = {
+  mounted(el: HTMLElement & { __vueClickOutside__?: (e: MouseEvent) => void }, binding: { value: (e: MouseEvent) => void }) {
+    function clickHandler(e: MouseEvent) {
+      if (el.contains(e.target as Node)) {
+        return false
+      }
+      if (binding.value) {
+        binding.value(e)
+      }
+    }
+    el.__vueClickOutside__ = clickHandler
+    document.addEventListener('click', clickHandler)
+  },
+  unmounted(el: HTMLElement & { __vueClickOutside__?: (e: MouseEvent) => void }) {
+    if (el.__vueClickOutside__) {
+      document.removeEventListener('click', el.__vueClickOutside__)
+      delete el.__vueClickOutside__
+    }
+  },
+}

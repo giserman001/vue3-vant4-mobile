@@ -31,6 +31,7 @@ export const RootRoute: RouteRecordRaw = {
   redirect: PageEnum.BASE_HOME,
   meta: {
     title: 'Root',
+    transition: false,
   },
 }
 
@@ -40,6 +41,7 @@ export const LoginRoute: RouteRecordRaw = {
   component: () => import('@/views/login/Login.vue'),
   meta: {
     title: '登录',
+    transition: false,
   },
 }
 
@@ -49,5 +51,6 @@ export const tabBarRoute: RouteRecordRaw = {
   component: () => import('@/views/tabBar/index.vue'),
   meta: {
     title: 'tabbar',
+    transition: false,
   },
 }

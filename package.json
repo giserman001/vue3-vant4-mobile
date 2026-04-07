@@ -46,7 +46,6 @@
     "echarts": "^5.4.3",
     "lodash-es": "^4.17.21",
     "mockjs": "^1.1.0",
-    "nprogress": "^0.2.0",
     "pinia": "^3.0.4",
     "pinia-plugin-persistedstate": "^4.7.1",
     "qs": "^6.11.2",
@@ -60,11 +59,11 @@
     "@commitlint/cli": "^18.4.3",
     "@commitlint/config-conventional": "^18.4.3",
     "@iconify/json": "^2.2.188",
+    "@iconify/utils": "^3.1.0",
     "@oxc-parser/binding-win32-x64-msvc": "0.115.0",
     "@types/fs-extra": "^11.0.4",
     "@types/mockjs": "^1.0.10",
     "@types/node": "^25.5.0",
-    "@types/nprogress": "^0.2.3",
     "@types/qs": "^6.9.11",
     "@unocss/eslint-plugin": "^66.6.7",
     "@unocss/preset-icons": "^66.6.7",
@@ -100,8 +99,10 @@
     "vite-plugin-compression": "^0.5.1",
     "vite-plugin-html": "^3.2.2",
     "vite-plugin-mock": "^2.9.8",
+    "vite-plugin-pwa": "^1.2.0",
     "vite-plugin-svg-icons": "^2.0.1",
-    "vue-tsc": "^3.2.6"
+    "vue-tsc": "^3.2.6",
+    "workbox-window": "^7.4.0"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm lint-staged",

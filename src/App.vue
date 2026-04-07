@@ -1,14 +1,16 @@
 <template>
   <vanConfigProvider :theme="getDarkMode" :theme-vars="getThemeVars()">
-    <RouterView v-slot="{ Component }">
-      <div class="absolute bottom-0 top-0 w-full overflow-hidden">
-        <transition :name="getTransitionName" mode="out-in" appear>
-          <KeepAlive v-if="keepAliveComponents" :include="keepAliveComponents">
-            <component :is="Component" />
-          </KeepAlive>
+    <div class="absolute inset-0 overflow-hidden">
+      <RouterView v-slot="{ Component, route }">
+        <transition :name="transitionName">
+          <div :key="route.fullPath" class="absolute inset-0 overflow-x-hidden overflow-y-auto">
+            <KeepAlive v-if="keepAliveComponents" :include="keepAliveComponents">
+              <component :is="Component" />
+            </KeepAlive>
+          </div>
         </transition>
-      </div>
-    </RouterView>
+      </RouterView>
+    </div>
   </vanConfigProvider>
 </template>
 
@@ -16,9 +18,13 @@
 import { darken, lighten } from '@/utils'
 import { useRouteStore } from '@/store/modules/route'
 import { useDesignSetting } from '@/hooks/setting/useDesignSetting'
+import { useRouteTransition } from '@/hooks/useRouteTransition'
+import { useSwipeBack } from '@/hooks/useSwipeBack'
 
 const routeStore = useRouteStore()
-const { getDarkMode, getAppTheme, getIsPageAnimate, getPageAnimateType } = useDesignSetting()
+const { getDarkMode, getAppTheme } = useDesignSetting()
+const { transitionName } = useRouteTransition()
+useSwipeBack()
 
 // 需要缓存的路由组件
 const keepAliveComponents = computed(() => routeStore.keepAliveComponents)
@@ -66,10 +72,6 @@ function getThemeVars() {
     treeSelectItemActiveColor: appTheme,
   }
 }
-
-const getTransitionName = computed(() => {
-  return unref(getIsPageAnimate) ? unref(getPageAnimateType) : undefined
-})
 </script>
 
 <style lang="less">

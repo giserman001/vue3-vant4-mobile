@@ -1,0 +1,69 @@
+// 微信 App 风格路由滑动动画
+// 进栈(forward): 新页面从右侧带阴影滑入覆盖，旧页面向左微移并变暗
+// 离栈(backward): 当前页面向右滑出，底层页面从左侧恢复并变亮
+
+@wx-slide-duration: 0.3s;
+@wx-slide-easing: cubic-bezier(0.2, 0, 0, 1);
+
+// ============================================
+// Forward: slide-right (进栈 - 新页面从右滑入)
+// ============================================
+.wx-slide-right-enter-active {
+  transition: transform @wx-slide-duration @wx-slide-easing;
+  z-index: 10;
+  // 新页面左侧投影（模拟微信的页面叠加阴影）
+  box-shadow: -4px 0 16px rgba(0, 0, 0, 0.15);
+}
+
+.wx-slide-right-leave-active {
+  transition: transform @wx-slide-duration @wx-slide-easing;
+  z-index: 1;
+}
+
+.wx-slide-right-enter-from {
+  transform: translateX(100%);
+}
+
+.wx-slide-right-enter-to {
+  transform: translateX(0);
+}
+
+.wx-slide-right-leave-from {
+  transform: translateX(0);
+}
+
+.wx-slide-right-leave-to {
+  // 旧页面只微移一点点（微信大约 20%）
+  transform: translateX(-20%);
+}
+
+// ============================================
+// Backward: slide-left (离栈 - 当前页面向右滑出)
+// ============================================
+.wx-slide-left-enter-active {
+  transition: transform @wx-slide-duration @wx-slide-easing;
+  z-index: 1;
+}
+
+.wx-slide-left-leave-active {
+  transition: transform @wx-slide-duration @wx-slide-easing;
+  z-index: 10;
+  // 离开页面左侧投影
+  box-shadow: -4px 0 16px rgba(0, 0, 0, 0.15);
+}
+
+.wx-slide-left-enter-from {
+  transform: translateX(-20%);
+}
+
+.wx-slide-left-enter-to {
+  transform: translateX(0);
+}
+
+.wx-slide-left-leave-from {
+  transform: translateX(0);
+}
+
+.wx-slide-left-leave-to {
+  transform: translateX(100%);
+}

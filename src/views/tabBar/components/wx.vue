@@ -10,8 +10,9 @@
       <div
         v-for="(item, index) in list"
         :key="index"
-        class="flex items-center pl-12px pt-12px"
+        class="flex items-center pl-12px pt-12px active:bg-[#e5e5e5]"
         :class="item.top ? 'bg-[#f3f3f3]' : 'bg-white'"
+        @click="goToChat(index)"
       >
         <!-- 头像 -->
         <div class="relative mr-12px shrink-0 pb-12px">
@@ -40,6 +41,10 @@
 </template>
 
 <script lang="ts" setup>
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
 // 预加载所有头像图片
 const headImgModules = import.meta.glob('@/assets/images/head-portrait/*.jpg', {
   eager: true,
@@ -49,6 +54,11 @@ const headImgModules = import.meta.glob('@/assets/images/head-portrait/*.jpg', {
 function getHeadImg(index: number): string {
   const key = `/src/assets/images/head-portrait/${index + 1}.jpg`
   return headImgModules[key] || ''
+}
+
+// 进入聊天页面
+function goToChat(index: number) {
+  router.push(`/chat/${index + 1}`)
 }
 
 interface ChatItem {

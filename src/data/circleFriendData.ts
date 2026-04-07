@@ -1,9 +1,15 @@
 import { v4 as uuidv4 } from 'uuid'
 import { getTime } from '@/utils'
 
-// 获取图片 URL 的辅助函数
+// 使用 import.meta.glob 预加载所有图片资源
+const imageModules = import.meta.glob<{ default: string }>(
+  '../assets/images/**/*.{jpg,png,svg}',
+  { eager: true },
+)
+
 function getImageUrl(path: string): string {
-  return new URL(`../assets/images/${path}`, import.meta.url).href
+  const key = `../assets/images/${path}`
+  return imageModules[key]?.default || ''
 }
 
 const momentArr = [

@@ -11,6 +11,7 @@ import '@unocss/reset/tailwind-compat.css'
 // Register icon sprite
 import 'virtual:svg-icons-register'
 import { createApp } from 'vue'
+import { registerSW } from 'virtual:pwa-register'
 import App from './App.vue'
 import router, { setupRouter } from './router'
 import { setupStore } from '@/store'
@@ -24,6 +25,19 @@ async function bootstrap() {
   await router.isReady()
   // 路由准备就绪后挂载APP实例
   app.mount('#app', true)
+
+  // 注册 Service Worker（仅在生产环境）
+  if (import.meta.env.PROD) {
+    registerSW({
+      immediate: true,
+      onRegistered(r) {
+        console.log('PWA Service Worker 已注册:', r)
+      },
+      onRegisterError(error) {
+        console.error('PWA Service Worker 注册失败:', error)
+      },
+    })
+  }
 }
 
 void bootstrap()

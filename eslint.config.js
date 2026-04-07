@@ -5,6 +5,8 @@ export default antfu({
   unocss: true,
   ignores: [
     '.qoder/**',
+    'dev-dist/**',
+    'dist/**',
   ],
   stylistic: {
     indent: 2, // 4, or 'tab'

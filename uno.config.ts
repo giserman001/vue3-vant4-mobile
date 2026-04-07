@@ -6,6 +6,7 @@ import {
   presetWebFonts,
 } from 'unocss'
 import presetIcons from '@unocss/preset-icons'
+import { FileSystemIconLoader } from '@iconify/utils/lib/loader/node-loaders'
 import presetRemToPx from '@unocss/preset-rem-to-px'
 import transformerVariantGroup from '@unocss/transformer-variant-group'
 import transformerDirectives from '@unocss/transformer-directives'
@@ -27,6 +28,10 @@ export default defineConfig({
     // 图标预设: https://unocss.dev/presets/icons
     presetIcons({
       // cdn: 'https://esm.sh/',
+      collections: {
+        'wx': FileSystemIconLoader('./src/assets/icons/new'),
+        'wx-mine': FileSystemIconLoader('./src/assets/icons/new/mine'),
+      },
       extraProperties: {
         'display': 'inline-block',
         'vertical-align': 'middle',
@@ -67,6 +72,9 @@ export default defineConfig({
     'flex-y-center': 'flex items-center', // flex布局：交叉轴居中
     'text-overflow': 'overflow-hidden whitespace-nowrap text-ellipsis', // 文本溢出显示省略号
     'text-break': 'whitespace-normal break-all break-words', // 文本溢出换行
+    'col-center': 'items-center', // 交叉轴居中
+    'row-between': 'justify-between', // 主轴两端对齐
+    'row-center': 'justify-center', // 主轴居中
   },
 
   // 由于 UnoCSS 在构建时工作，这意味着只会生成静态呈现的 icon 并将其发送到你的组件中
@@ -79,5 +87,9 @@ export default defineConfig({
     'i-ph:chart-line',
     'i-ph:code',
     'i-ph:user',
+    'i-wx-group-chat',
+    'i-wx-add-friend',
+    'i-wx-scan',
+    'i-wx-payment',
   ],
 })

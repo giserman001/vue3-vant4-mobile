@@ -141,6 +141,30 @@ const routeModuleList: Array<RouteRecordRaw> = [
     },
     component: () => import('@/views/my/ThemeSetting.vue'),
   },
+
+  // 朋友圈
+  {
+    path: '/circleFriend',
+    name: 'CircleFriend',
+    meta: {
+      title: '朋友圈',
+      innerPage: true,
+      hiddenHeader: true,
+    },
+    component: () => import('@/views/circleFriend/index.vue'),
+  },
+
+  // 聊天
+  {
+    path: '/chat/:id',
+    name: 'Chat',
+    meta: {
+      title: '聊天',
+      innerPage: true,
+      hiddenHeader: true,
+    },
+    component: () => import('@/views/chat/index.vue'),
+  },
 ]
 
 export default routeModuleList

@@ -38,7 +38,7 @@
     <div class="h-8px" />
     <div class="bg-white">
       <div class="flex items-center pl-12px">
-        <img src="@/assets/images/icon/10.png" alt="" class="mr-16px h-24px w-24px">
+        <div class="i-wx-mine-wxzf mr-16px h-24px w-24px" />
         <div class="h-56px flex flex-1 items-center pr-12px">
           <span class="flex-1 text-17px text-[#000]">服务</span>
           <van-icon name="arrow" color="#C8C8C8" size="16" />
@@ -50,14 +50,14 @@
     <div class="h-8px" />
     <div class="bg-white">
       <div class="flex items-center pl-12px">
-        <img src="@/assets/images/icon/11.png" alt="" class="mr-16px h-24px w-24px">
+        <div class="i-wx-mine-wxsc mr-16px h-24px w-24px" />
         <div class="h-56px flex flex-1 items-center border-b border-b-[#ECECEC] pr-12px">
           <span class="flex-1 text-17px text-[#000]">收藏</span>
           <van-icon name="arrow" color="#C8C8C8" size="16" />
         </div>
       </div>
       <div class="flex items-center pl-12px">
-        <img src="@/assets/images/icon/1.png" alt="" class="mr-16px h-24px w-24px">
+        <div class="i-wx-mine-wdpyq mr-16px h-24px w-24px" />
         <div class="h-56px flex flex-1 items-center border-b border-b-[#ECECEC] pr-12px">
           <span class="flex-1 text-17px text-[#000]">朋友圈</span>
           <van-icon name="arrow" color="#C8C8C8" size="16" />
@@ -71,14 +71,14 @@
         </div>
       </div> -->
       <div class="flex items-center pl-12px">
-        <img src="@/assets/images/icon/12.png" alt="" class="mr-16px h-24px w-24px">
+        <div class="i-wx-mine-xdykb mr-16px h-24px w-24px" />
         <div class="h-56px flex flex-1 items-center border-b border-b-[#ECECEC] pr-12px">
           <span class="flex-1 text-17px text-[#000]">小店与卡包</span>
           <van-icon name="arrow" color="#C8C8C8" size="16" />
         </div>
       </div>
       <div class="flex items-center pl-12px">
-        <img src="@/assets/images/icon/13.png" alt="" class="mr-16px h-24px w-24px">
+        <div class="i-wx-mine-wxbq mr-16px h-24px w-24px" />
         <div class="h-56px flex flex-1 items-center pr-12px">
           <span class="flex-1 text-17px text-[#000]">表情</span>
           <van-icon name="arrow" color="#C8C8C8" size="16" />
@@ -90,7 +90,7 @@
     <div class="h-8px" />
     <div class="bg-white">
       <div class="flex items-center pl-12px">
-        <img src="@/assets/images/icon/14.png" alt="" class="mr-16px h-24px w-24px">
+        <div class="i-wx-mine-wxsz mr-16px h-24px w-24px" />
         <div class="h-56px flex flex-1 items-center pr-12px">
           <span class="flex-1 text-17px text-[#000]">设置</span>
           <van-icon name="arrow" color="#C8C8C8" size="16" />
