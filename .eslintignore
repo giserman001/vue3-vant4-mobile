@@ -1,0 +1,22 @@
+# 自动生成文件
+.qoder/
+dev-dist/
+dist/
+
+# 依赖
+node_modules/
+
+# 日志
+*.log
+
+# 本地环境文件
+.env.local
+.env.*.local
+
+# 编辑器
+.vscode/
+.idea/
+
+# 系统文件
+.DS_Store
+Thumbs.db

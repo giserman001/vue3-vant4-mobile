@@ -6,7 +6,11 @@ export default antfu({
   ignores: [
     '.qoder/**',
     'dev-dist/**',
+    'dev-dist/**/*',
     'dist/**',
+    'dist/**/*',
+    '**/dev-dist/**',
+    '**/dist/**',
   ],
   stylistic: {
     indent: 2, // 4, or 'tab'

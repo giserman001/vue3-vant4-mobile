@@ -109,8 +109,7 @@
     "commit-msg": "npx --no-install commitlint --edit $1"
   },
   "lint-staged": {
-    "src/**/*.{js,ts,vue}": "eslint --fix",
-    "*.{js,ts,json,html,css}": "eslint --fix"
+    "src/**/*.{js,ts,vue}": "eslint --fix"
   },
   "config": {
     "commitizen": {

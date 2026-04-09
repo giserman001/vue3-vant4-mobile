@@ -67,6 +67,8 @@ declare global {
     VITE_PROXY: [string, string][]
     VITE_BUILD_COMPRESS: 'gzip' | 'brotli' | 'none'
     VITE_BUILD_COMPRESS_DELETE_ORIGIN_FILE: boolean
+    VITE_GLOB_INDEXDB_NAME: string
+    VITE_GLOB_INDEXDB_STORE: string
   }
 }
 

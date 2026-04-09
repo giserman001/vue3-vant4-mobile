@@ -98,19 +98,28 @@
 
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { useAppStore } from '@/store/modules/app'
 
 const router = useRouter()
+const route = useRoute()
+const appStore = useAppStore()
+
+// 当前聊天ID
+const chatId = computed(() => Number(route.params.id))
 
 // 当前好友信息
-const currentFriend = ref({
-  id: '1',
-  name: '李伟',
-  avatar: '/src/assets/images/head-portrait/1.jpg',
+const currentFriend = computed(() => {
+  const chat = appStore.getChatList.find(item => item.id === chatId.value)
+  return {
+    id: chat?.id || 0,
+    name: chat?.name || '',
+    avatar: chat?.avatar || '',
+  }
 })
 
 // 自己头像
-const selfAvatar = '/src/assets/images/head-portrait/21.jpg'
+const selfAvatar = appStore.selfAvatar
 
 // 切换菜单显示状态
 const showSwitchMenu = ref(false)
@@ -124,65 +133,13 @@ const inputMessage = ref('')
 // 消息容器引用
 const messageContainer = ref<HTMLElement>()
 
-// 聊天数据（响应式数组，支持添加新消息）
-const chatData = ref([
-  {
-    content: '1、简历优化服务：资深HR一对一简历诊断和优化（更高面试邀约率）\n2、面试辅导服务：模拟面试+面试技巧培训（更高通过率）\n3、职业规划咨询：行业趋势分析+职业发展路径规划（更清晰方向）\n4、内推资源对接：优质企业内推机会（更高面率）\n5、面试决胜锦囊：定制化面试策略和面试问题预测（更高通过率）\n6、薪酬谈判智囊：专业化谈薪辅导服务（更高薪资）\n7、多维评估：提供offer企业基础信息调研报告（更全面了解入职企业）',
-    isFriend: false,
-    time: '3月31日 下午2:01',
-    showTime: true,
-  },
-  {
-    content: '你们公司有做大模型相关的东西吗',
-    isFriend: true,
-    time: '3月31日 下午2:01',
-    showTime: false,
-  },
-  {
-    content: '没啊',
-    isFriend: false,
-    time: '3月31日 下午2:02',
-    showTime: false,
-  },
-  {
-    content: '只是业务开发',
-    isFriend: false,
-    time: '3月31日 下午2:02',
-    showTime: false,
-  },
-  {
-    content: '暂时估计想不到什么好的落地应用',
-    isFriend: true,
-    time: '3月31日 下午2:03',
-    showTime: false,
-  },
-  {
-    content: '对',
-    isFriend: false,
-    time: '3月31日 下午2:03',
-    showTime: false,
-  },
-  {
-    content: '我看基本都是做智能客服啥的',
-    isFriend: true,
-    time: '3月31日 下午2:04',
-    showTime: false,
-  },
-  {
-    content: '先去面试一下，看看现在面试都问啥',
-    isFriend: false,
-    time: '3月31日 下午2:05',
-    showTime: false,
-  },
-  {
-    content: '嗯呢',
-    isFriend: true,
-    time: '3月31日 下午2:05',
-    showTime: false,
-  },
-])
+// 聊天数据
+const chatData = computed(() => {
+  const chat = appStore.getChatList.find(item => item.id === chatId.value)
+  return chat?.messages || []
+})
 
-// 显示的消息（历史消息保持不变，只影响新发送消息的身份）
+// 显示的消息
 const displayedMessages = computed(() => {
   return chatData.value
 })
@@ -208,15 +165,8 @@ function sendMessage() {
     return
   }
 
-  const now = new Date()
-  const timeStr = `${now.getMonth() + 1}月${now.getDate()}日 ${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`
-
-  chatData.value.push({
-    content: inputMessage.value,
-    isFriend: isSelfMode.value, // true = 好友发送（白色），false = 自己发送（绿色）
-    time: timeStr,
-    showTime: true,
-  })
+  // 使用 store 发送消息
+  appStore.sendMessage(chatId.value, inputMessage.value, isSelfMode.value)
 
   inputMessage.value = ''
   scrollToBottom()

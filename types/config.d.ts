@@ -26,4 +26,8 @@ export interface GlobEnvConfig {
   VITE_GLOB_IMG_URL?: string
   // 生产环境开启mock
   VITE_GLOB_PROD_MOCK: boolean
+  // IndexDB 数据库名称
+  VITE_GLOB_INDEXDB_NAME: string
+  // IndexDB 存储表名
+  VITE_GLOB_INDEXDB_STORE: string
 }

@@ -194,8 +194,9 @@ import camera2 from '@/assets/images/icon/camera2.png'
 import zan2 from '@/assets/images/icon/zan2.png'
 import zan3 from '@/assets/images/icon/zan3.png'
 
-const DB_NAME = 'wx_zan'
-const STORE_NAME = 'my_cilcle_friend_store'
+// 从环境变量获取 IndexDB 配置
+const DB_NAME = import.meta.env.VITE_GLOB_INDEXDB_NAME
+const STORE_NAME = import.meta.env.VITE_GLOB_INDEXDB_STORE
 
 const getCameraImg = (isTop: boolean) => (isTop ? camera1 : camera2)
 const getZanImg = (isMyZan: boolean) => (isMyZan ? zan3 : zan2)
