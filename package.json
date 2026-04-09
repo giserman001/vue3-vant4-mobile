@@ -29,7 +29,9 @@
     "clean:lib": "rimraf node_modules",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "lint:lint-staged": "lint-staged"
+    "lint:lint-staged": "lint-staged",
+    "download:avatars": "node scripts/download-avatars.js",
+    "generate:group-avatar": "node scripts/generate-group-avatar.js"
   },
   "dependencies": {
     "@types/lodash-es": "^4.17.12",
@@ -81,6 +83,7 @@
     "rimraf": "^3.0.2",
     "rollup": "^4.9.1",
     "rollup-plugin-visualizer": "^5.11.0",
+    "sharp": "^0.34.5",
     "simple-git-hooks": "^2.9.0",
     "terser": "^5.46.1",
     "tsx": "^4.21.0",
@@ -102,7 +105,7 @@
     "commit-msg": "npx --no-install commitlint --edit $1"
   },
   "lint-staged": {
-    "src/**/*.{js,ts,vue}": "eslint --fix"
+    "src/**/*.{js,ts,vue}": "cross-env NODE_OPTIONS=--max-old-space-size=4096 eslint --fix"
   },
   "config": {
     "commitizen": {

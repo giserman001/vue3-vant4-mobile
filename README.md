@@ -302,3 +302,7 @@ simple-git-hooks 和 husky 都是用于管理 Git 钩子（Git hooks）的工具
 ## LICENSE
 
 [MIT](https://en.wikipedia.org/wiki/MIT_License)
+
+## 头像获取
+
+[头像](https://picsum.photos/)

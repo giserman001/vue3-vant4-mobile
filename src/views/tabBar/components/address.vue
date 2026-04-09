@@ -50,7 +50,7 @@
           :key="item.name"
           class="flex items-center pl-12px"
         >
-          <img :src="getAddressImg(group.startIdx + idx)" alt="" class="mr-12px h-40px w-40px shrink-0 rounded-6px">
+          <img :src="getAvatarImg(item.avatarIdx)" alt="" class="mr-12px h-40px w-40px shrink-0 rounded-6px">
           <div
             class="h-60px min-w-0 flex flex-1 items-center pr-12px"
             :class="idx < group.list.length - 1 ? 'border-b border-b-[#ECECEC]' : ''"
@@ -61,12 +61,51 @@
       </div>
     </template>
 
+    <!-- 底部好友数量 -->
+    <div class="h-60px flex items-center justify-center">
+      <span
+        class="text-14px text-[#808080]"
+        @click="showModal = true"
+      >
+        {{ friendCount }}个朋友
+      </span>
+    </div>
+
     <!-- 右侧字母索引栏 -->
     <div class="fixed right-4px top-1/2 z-10 flex flex-col items-center text-11px text-[#808080] -translate-y-1/2">
       <span v-for="letter in indexLetters" :key="letter" class="px-2px py-0.5px leading-tight">
         {{ letter }}
       </span>
     </div>
+
+    <!-- 修改好友数量弹窗 -->
+    <van-dialog
+      v-model:show="showModal"
+      title="修改好友显示数量"
+      show-confirm-button
+      show-cancel-button
+      confirm-button-text="修改"
+      confirm-button-color="#07C160"
+      @confirm="updateCount"
+      @cancel="showModal = false"
+    >
+      <div class="p-16px">
+        <input
+          v-model="inputCount"
+          type="number"
+          placeholder="请输入新的好友数量"
+          class="h-44px w-full border border-[#E5E5E5] rounded-4px px-12px text-16px text-[#000] outline-none focus:border-[#07C160] placeholder:text-[#B2B2B2]"
+        >
+        <div class="mt-12px text-center">
+          <span
+            class="text-14px text-[#576B95]"
+            @click="resetCount"
+          >
+            恢复默认
+          </span>
+        </div>
+      </div>
+    </van-dialog>
   </div>
 </template>
 
@@ -78,15 +117,35 @@ import IconTag from '@/assets/images/icon/tag.png'
 import IconOfficialAccounts from '@/assets/images/icon/official-accounts.png'
 import IconCompanyWx from '@/assets/images/icon/company-wx-friend.png'
 
-// 预加载所有通讯录图片
-const addressImgModules = import.meta.glob('@/assets/images/address-book/*.jpg', {
+// 弹窗控制
+const showModal = ref(false)
+const friendCount = ref(1081)
+const inputCount = ref(1081)
+const defaultCount = 1081
+
+// 重置为默认值
+function resetCount() {
+  inputCount.value = defaultCount
+}
+
+// 更新好友数量
+function updateCount() {
+  const count = Number(inputCount.value)
+  if (count > 0) {
+    friendCount.value = count
+  }
+  showModal.value = false
+}
+
+// 预加载所有头像图片
+const avatarImgModules = import.meta.glob('@/assets/images/avatar/*.jpg', {
   eager: true,
   import: 'default',
 }) as Record<string, string>
 
-function getAddressImg(num: number): string {
-  const key = `/src/assets/images/address-book/${num}.jpg`
-  return addressImgModules[key] || ''
+function getAvatarImg(num: number): string {
+  const key = `/src/assets/images/avatar/avatar-${num}.jpg`
+  return avatarImgModules[key] || ''
 }
 
 // 功能入口列表
@@ -110,11 +169,10 @@ const indexList1 = [
   },
 ]
 
-// 联系人分组
-const contactGroups = [
+// 联系人分组（startIdx 会在计算时自动修正）
+const contactGroupsRaw = [
   {
     letter: 'A',
-    startIdx: 1,
     list: [
       { name: 'A' },
       { name: 'A0 合肥·领达·汽车维修《宋瑞》' },
@@ -126,7 +184,6 @@ const contactGroups = [
   },
   {
     letter: 'B',
-    startIdx: 2,
     list: [
       { name: '百年工匠' },
       { name: 'Boarding' },
@@ -138,7 +195,6 @@ const contactGroups = [
   },
   {
     letter: 'C',
-    startIdx: 3,
     list: [
       { name: 'Camelia' },
       { name: '陈芳芳（2）' },
@@ -151,7 +207,6 @@ const contactGroups = [
   },
   {
     letter: 'D',
-    startIdx: 4,
     list: [
       { name: '大壮' },
       { name: '丁锦' },
@@ -162,7 +217,6 @@ const contactGroups = [
   },
   {
     letter: 'F',
-    startIdx: 5,
     list: [
       { name: '广标硬件-陈' },
       { name: '风轻云淡' },
@@ -172,7 +226,6 @@ const contactGroups = [
   },
   {
     letter: 'G',
-    startIdx: 6,
     list: [
       { name: '工作群' },
       { name: '管理员' },
@@ -181,7 +234,6 @@ const contactGroups = [
   },
   {
     letter: 'H',
-    startIdx: 7,
     list: [
       { name: '胡伟立' },
       { name: '黄子墨' },
@@ -192,7 +244,6 @@ const contactGroups = [
   },
   {
     letter: 'J',
-    startIdx: 8,
     list: [
       { name: '建明' },
       { name: '金融-刘经理' },
@@ -201,7 +252,6 @@ const contactGroups = [
   },
   {
     letter: 'L',
-    startIdx: 9,
     list: [
       { name: '李伟' },
       { name: '丽丽' },
@@ -214,7 +264,6 @@ const contactGroups = [
   },
   {
     letter: 'M',
-    startIdx: 10,
     list: [
       { name: '麻辣烫-小张' },
       { name: '美团外卖' },
@@ -223,7 +272,6 @@ const contactGroups = [
   },
   {
     letter: 'S',
-    startIdx: 11,
     list: [
       { name: 'Sina' },
       { name: '师傅' },
@@ -233,7 +281,6 @@ const contactGroups = [
   },
   {
     letter: 'W',
-    startIdx: 12,
     list: [
       { name: '王陵（北京顾客）' },
       { name: '王小军' },
@@ -244,7 +291,6 @@ const contactGroups = [
   },
   {
     letter: 'X',
-    startIdx: 13,
     list: [
       { name: '小兔乖乖' },
       { name: '小阿飞' },
@@ -254,7 +300,6 @@ const contactGroups = [
   },
   {
     letter: 'Y',
-    startIdx: 14,
     list: [
       { name: '英卫小公主' },
       { name: '杨师傅' },
@@ -263,7 +308,6 @@ const contactGroups = [
   },
   {
     letter: 'Z',
-    startIdx: 15,
     list: [
       { name: '郑有海' },
       { name: '张三' },
@@ -272,6 +316,20 @@ const contactGroups = [
     ],
   },
 ]
+
+// 计算带正确 startIdx 的联系人分组
+const contactGroups = (() => {
+  let avatarIdx = 1
+  return contactGroupsRaw.map(group => ({
+    ...group,
+    startIdx: avatarIdx,
+    list: group.list.map((item, idx) => ({
+      ...item,
+      avatarIdx: avatarIdx + idx,
+    })),
+    _endIdx: (avatarIdx += group.list.length),
+  }))
+})()
 
 // 右侧字母索引
 const indexLetters = [
