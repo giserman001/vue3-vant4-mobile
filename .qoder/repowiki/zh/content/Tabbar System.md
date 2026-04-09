@@ -13,15 +13,16 @@
 - [src/store/modules/app.ts](file://src/store/modules/app.ts)
 - [src/styles/transition/wx-slide.less](file://src/styles/transition/wx-slide.less)
 - [src/hooks/useSwipeBack.ts](file://src/hooks/useSwipeBack.ts)
+- [scripts/download-avatars.js](file://scripts/download-avatars.js)
+- [scripts/generate-group-avatar.js](file://scripts/generate-group-avatar.js)
 </cite>
 
 ## 更新摘要
 **所做更改**
-- 新增微信风格长按菜单功能，大幅提升交互体验
-- 增强聊天列表的滑动操作和手势控制
-- 完善微信风格导航界面的视觉元素和动画效果
-- 优化触控反馈和震动效果
-- 新增微信风格路由滑动动画和手势滑动返回功能
+- 地址簿组件重大改进：新增动态好友数量管理系统（模态对话框）
+- 头像系统完全迁移：getAddressImg重命名为getAvatarImg，支持自动头像索引
+- 联系人分组系统增强：实现自动头像索引分配（avatarIdx），提升头像管理效率
+- 字母索引侧边栏功能保持：维持原有的便捷导航体验
 
 ## 目录
 1. [简介](#简介)
@@ -39,6 +40,8 @@
 
 本项目实现了一个高度仿真的微信H5 Tabbar系统，提供了完整的移动端底部导航功能。该系统包含四个主要模块：微信聊天、通讯录、发现页面和个人中心，并集成了浮动导航栏、路由管理、状态管理和数据持久化等功能。经过大幅增强后，系统现在支持微信风格的长按菜单、滑动操作、震动反馈和精美的视觉动画效果，显著提升了整体用户体验。
 
+**更新** 地址簿组件经过重大升级，实现了更完善的联系人管理功能，包括动态好友数量管理、头像系统完全迁移和增强的联系人分组系统。
+
 ## 项目结构
 
 Tabbar系统采用模块化的Vue3架构设计，主要文件组织如下：
@@ -49,7 +52,7 @@ subgraph "Tabbar系统架构"
 A[src/views/tabBar/] --> B[index.vue]
 A --> C[components/]
 C --> D[wx.vue - 增强版]
-C --> E[address.vue]
+C --> E[address.vue - 重大升级]
 C --> F[find.vue]
 C --> G[mine.vue]
 H[src/layout/] --> I[index.vue]
@@ -58,12 +61,16 @@ K[src/router/] --> L[index.ts]
 M[src/store/] --> N[modules/app.ts]
 O[src/styles/transition/] --> P[wx-slide.less]
 Q[src/hooks/] --> R[useSwipeBack.ts]
+S[scripts/] --> T[download-avatars.js]
+S --> U[generate-group-avatar.js]
 end
 ```
 
 **图表来源**
 - [src/views/tabBar/index.vue:1-180](file://src/views/tabBar/index.vue#L1-L180)
 - [src/layout/index.vue:1-60](file://src/layout/index.vue#L1-L60)
+- [scripts/download-avatars.js:1-119](file://scripts/download-avatars.js#L1-L119)
+- [scripts/generate-group-avatar.js:1-193](file://scripts/generate-group-avatar.js#L1-L193)
 
 **章节来源**
 - [src/views/tabBar/index.vue:1-180](file://src/views/tabBar/index.vue#L1-L180)
@@ -85,14 +92,14 @@ Tabbar主控制器负责管理整个底部导航系统的状态和交互逻辑�
 系统包含四个主要的tab子组件，每个都有独特的功能和数据展示：
 
 1. **微信(WX)**：聊天列表展示，支持徽章显示、头像预加载、长按菜单、滑动操作和震动反馈
-2. **通讯录(Address)**：联系人列表，支持字母索引和分组显示
+2. **通讯录(Address)**：联系人列表，支持字母索引、分组显示和动态好友数量管理
 3. **发现(Find)**：功能入口集合，模拟微信发现页面的各种功能
 4. **我(Mine)**：用户个人信息展示，集成用户状态管理
 
 **章节来源**
 - [src/views/tabBar/index.vue:86-180](file://src/views/tabBar/index.vue#L86-L180)
 - [src/views/tabBar/components/wx.vue:1-314](file://src/views/tabBar/components/wx.vue#L1-L314)
-- [src/views/tabBar/components/address.vue:1-313](file://src/views/tabBar/components/address.vue#L1-L313)
+- [src/views/tabBar/components/address.vue:1-371](file://src/views/tabBar/components/address.vue#L1-L371)
 - [src/views/tabBar/components/find.vue:1-119](file://src/views/tabBar/components/find.vue#L1-L119)
 - [src/views/tabBar/components/mine.vue:1-116](file://src/views/tabBar/components/mine.vue#L1-L116)
 
@@ -105,7 +112,7 @@ graph TD
 subgraph "表现层(View)"
 A[Tabbar主界面]
 B[WX组件 - 增强版]
-C[Address组件]
+C[Address组件 - 重大升级]
 D[Find组件]
 E[Mine组件]
 end
@@ -121,6 +128,8 @@ K[联系人数据]
 L[聊天记录]
 M[应用配置]
 N[动画效果]
+O[头像资源管理]
+P[群头像生成器]
 end
 A --> F
 B --> F
@@ -136,6 +145,8 @@ H --> K
 H --> L
 H --> M
 I --> N
+O --> C
+P --> C
 ```
 
 **图表来源**
@@ -265,7 +276,7 @@ WX组件采用了多种性能优化技术：
 
 ### Address组件详细分析
 
-Address组件实现了通讯录的复杂功能：
+**更新** Address组件经过重大升级，实现了全新的功能架构：
 
 #### 联系人数据结构
 
@@ -303,8 +314,55 @@ D --> D15[Z组]
 **图表来源**
 - [src/views/tabBar/components/address.vue:93-307](file://src/views/tabBar/components/address.vue#L93-L307)
 
+#### 动态好友数量管理系统
+
+**新增功能** Address组件现在支持动态好友数量管理：
+
+- **模态对话框**：点击"好友数量"显示可编辑的模态对话框
+- **实时更新**：支持修改好友显示数量并实时生效
+- **默认值恢复**：提供恢复默认数量的功能
+- **输入验证**：确保输入的数量为有效数字
+
+#### 增强的头像系统
+
+**重大改进** 头像系统完全迁移和优化：
+
+- **函数重命名**：getAddressImg重命名为getAvatarImg，统一命名规范
+- **自动头像索引**：实现自动头像索引分配（avatarIdx）
+- **预加载机制**：使用`import.meta.glob`预加载所有头像图片
+- **索引计算**：通过avatarIdx确保头像的连续性和唯一性
+
+#### 自动头像索引系统
+
+**新增功能** 实现了智能的头像索引管理：
+
+```mermaid
+flowchart LR
+A[联系人分组原始数据] --> B[计算函数]
+B --> C[avatarIdx = 1]
+C --> D[第一个分组: startIdx=1, list[0].avatarIdx=1]
+D --> E[第二个分组: startIdx=7, list[0].avatarIdx=7]
+E --> F[第三个分组: startIdx=13, list[0].avatarIdx=13]
+F --> G[依此类推...]
+```
+
+**图表来源**
+- [src/views/tabBar/components/address.vue:320-332](file://src/views/tabBar/components/address.vue#L320-L332)
+
+#### 字母索引侧边栏功能
+
+**保持不变** 维持原有的便捷导航体验：
+
+- **完整字母表**：支持A-Z的所有字母索引
+- **特殊字符**：包含"↑"、"☆"、"#"等特殊索引
+- **固定定位**：右侧固定位置，支持上下滑动导航
+- **视觉设计**：简洁的11px字体和灰色配色
+
 **章节来源**
-- [src/views/tabBar/components/address.vue:73-313](file://src/views/tabBar/components/address.vue#L73-L313)
+- [src/views/tabBar/components/address.vue:64-108](file://src/views/tabBar/components/address.vue#L64-L108)
+- [src/views/tabBar/components/address.vue:140-149](file://src/views/tabBar/components/address.vue#L140-L149)
+- [src/views/tabBar/components/address.vue:320-332](file://src/views/tabBar/components/address.vue#L320-L332)
+- [src/views/tabBar/components/address.vue:334-365](file://src/views/tabBar/components/address.vue#L334-L365)
 
 ### Find组件详细分析
 
@@ -361,68 +419,110 @@ AppStore --> UserInfo : manages
 
 ## 新增功能特性
 
-### 微信风格长按菜单系统
+### 动态好友数量管理系统
 
-WX组件新增了完整的长按菜单功能，提供接近原生微信的交互体验：
+**新增功能** Address组件实现了完整的动态好友数量管理：
 
-#### 长按菜单功能特性
+#### 模态对话框设计
 
-- **智能定位**：根据触摸位置自动判断菜单显示方向（上方或下方）
-- **边缘检测**：自动检测屏幕边界，确保菜单完整显示
-- **震动反馈**：长按时触发50ms震动反馈（支持设备）
-- **多级菜单**：支持4个功能选项的上下文菜单
-- **快速操作**：支持一键标记未读、置顶聊天、删除聊天等操作
+- **触发方式**：点击底部"好友数量"文本区域触发
+- **界面设计**：使用VanDialog组件实现微信风格的模态对话框
+- **输入控件**：支持数字输入和实时验证
+- **操作按钮**：提供确认和取消操作
 
-#### 菜单操作选项
+#### 数量管理功能
 
-| 功能 | 图标 | 描述 |
-|------|------|------|
-| 标为未读 | - | 打开弹窗设置未读消息数量 |
-| 置顶该聊天 | - | 切换聊天置顶状态 |
-| 不显示该聊天 | - | 暂时保留功能占位 |
-| 删除该聊天 | - | 从聊天列表中移除 |
+- **实时更新**：修改后的数量立即生效并显示
+- **默认值恢复**：点击"恢复默认"按钮回到初始值
+- **输入验证**：确保输入的数值大于0
+- **状态管理**：使用Vue响应式系统管理数量状态
 
 **章节来源**
-- [src/views/tabBar/components/wx.vue:85-180](file://src/views/tabBar/components/wx.vue#L85-L180)
+- [src/views/tabBar/components/address.vue:64-108](file://src/views/tabBar/components/address.vue#L64-L108)
+- [src/views/tabBar/components/address.vue:120-138](file://src/views/tabBar/components/address.vue#L120-L138)
 
-### 微信风格滑动操作
+### 头像系统完全迁移
 
-新增了完整的滑动操作支持，包括：
+**重大改进** 头像系统实现了完全的迁移和优化：
 
-- **左滑操作**：支持滑动显示操作按钮（标记未读、删除）
-- **滑动反馈**：提供流畅的滑动动画和视觉反馈
-- **手势识别**：精确的手势识别和响应
+#### 函数重命名
 
-**章节来源**
-- [src/views/tabBar/components/wx.vue:45-62](file://src/views/tabBar/components/wx.vue#L45-L62)
+- **getAddressImg** → **getAvatarImg**：统一命名规范，符合组件功能
+- **兼容性**：确保所有调用点都更新为新的函数名
+- **类型安全**：保持原有的TypeScript类型定义
 
-### 微信风格路由动画
+#### 自动头像索引管理
 
-新增了微信风格的路由滑动动画：
+- **索引分配**：通过avatarIdx实现连续的头像索引
+- **分组计算**：每个分组的起始索引自动计算
+- **列表映射**：为每个联系人分配唯一的头像索引
 
-#### 动画效果特性
+#### 预加载优化
 
-- **进栈动画**：新页面从右侧带阴影滑入覆盖
-- **离栈动画**：当前页面向左微移并变暗
-- **阴影效果**：模拟微信页面叠加的阴影效果
-- **过渡时间**：0.3秒的平滑过渡动画
-
-**章节来源**
-- [src/styles/transition/wx-slide.less:1-70](file://src/styles/transition/wx-slide.less#L1-L70)
-
-### 手势滑动返回
-
-新增了微信风格的手势滑动返回功能：
-
-#### 手势识别特性
-
-- **边缘触发**：从屏幕左边缘20px内开始向右滑动
-- **滑动阈值**：滑动距离超过屏幕宽度1/3时触发返回
-- **方向检测**：支持iOS和Android触摸事件
-- **智能判断**：纵向滑动时自动取消手势识别
+- **批量加载**：使用`import.meta.glob`在构建时预加载所有头像
+- **性能优化**：减少运行时的图片加载开销
+- **缓存机制**：利用浏览器缓存提高加载速度
 
 **章节来源**
-- [src/hooks/useSwipeBack.ts:1-51](file://src/hooks/useSwipeBack.ts#L1-L51)
+- [src/views/tabBar/components/address.vue:140-149](file://src/views/tabBar/components/address.vue#L140-L149)
+- [src/views/tabBar/components/address.vue:320-332](file://src/views/tabBar/components/address.vue#L320-L332)
+
+### 联系人分组系统增强
+
+**新增功能** 实现了智能的联系人分组管理：
+
+#### 自动索引计算
+
+```mermaid
+sequenceDiagram
+participant R as 原始分组数据
+participant C as 计算函数
+participant A as 分组A
+participant B as 分组B
+participant G as 分组G
+R->>C : 传入contactGroupsRaw
+C->>A : 分配startIdx=1
+C->>A : 分配list[0].avatarIdx=1
+C->>A : 分配list[1].avatarIdx=2
+C->>B : 分配startIdx=7
+C->>B : 分配list[0].avatarIdx=7
+C->>G : 分配startIdx=13
+C->>G : 分配list[0].avatarIdx=13
+```
+
+**图表来源**
+- [src/views/tabBar/components/address.vue:320-332](file://src/views/tabBar/components/address.vue#L320-L332)
+
+#### 分组数据结构
+
+- **起始索引**：每个分组包含startIdx属性
+- **结束索引**：包含_endIdx属性用于范围计算
+- **头像索引**：为每个联系人分配唯一的avatarIdx
+- **自动计算**：索引值在计算时自动修正和分配
+
+**章节来源**
+- [src/views/tabBar/components/address.vue:172-332](file://src/views/tabBar/components/address.vue#L172-L332)
+
+### 字母索引侧边栏功能保持
+
+**保持不变** 维持原有的导航体验：
+
+#### 完整索引支持
+
+- **字母索引**：支持A-Z的所有英文字母
+- **特殊字符**：包含"↑"、"☆"、"#"等特殊索引符号
+- **固定定位**：右侧固定位置，不影响主要内容区域
+- **视觉设计**：11px字体大小，#808080灰色配色
+
+#### 导航体验
+
+- **便捷访问**：用户可以快速跳转到指定字母分组
+- **响应式设计**：适配不同屏幕尺寸
+- **视觉反馈**：悬停和点击时的视觉反馈
+
+**章节来源**
+- [src/views/tabBar/components/address.vue:74-79](file://src/views/tabBar/components/address.vue#L74-L79)
+- [src/views/tabBar/components/address.vue:334-365](file://src/views/tabBar/components/address.vue#L334-L365)
 
 ## 依赖关系分析
 
@@ -437,39 +537,52 @@ C[Pinia]
 D[@vueuse/core]
 E[VueUse]
 F[Less]
+G[Sharp图像处理库]
 end
 subgraph "内部模块"
-G[Tabbar控制器]
-H[WX组件 - 增强版]
-I[Address组件]
-J[Find组件]
-K[Mine组件]
-L[路由配置]
-M[状态管理]
-N[数据模型]
-O[动画样式]
-P[手势钩子]
+H[Tabbar控制器]
+I[WX组件 - 增强版]
+J[Address组件 - 重大升级]
+K[Find组件]
+L[Mine组件]
+M[路由配置]
+N[状态管理]
+O[数据模型]
+P[动画样式]
+Q[手势钩子]
+R[头像资源管理]
+S[群头像生成器]
+T[下载脚本]
+U[生成脚本]
 end
-A --> G
-B --> L
-C --> M
-D --> G
-E --> P
+A --> H
+B --> M
+C --> N
+D --> H
+E --> Q
 F --> O
-G --> H
-G --> I
-G --> J
-G --> K
-L --> G
-M --> N
-M --> G
-O --> H
-P --> H
+G --> S
+H --> I
+H --> J
+H --> K
+H --> L
+M --> H
+N --> O
+N --> H
+O --> J
+P --> I
+Q --> I
+R --> J
+S --> J
+T --> R
+U --> S
 ```
 
 **图表来源**
 - [src/views/tabBar/index.vue:87-92](file://src/views/tabBar/index.vue#L87-L92)
 - [src/router/index.ts:1-33](file://src/router/index.ts#L1-L33)
+- [scripts/download-avatars.js:1-119](file://scripts/download-avatars.js#L1-L119)
+- [scripts/generate-group-avatar.js:1-193](file://scripts/generate-group-avatar.js#L1-L193)
 
 **章节来源**
 - [src/router/index.ts:1-33](file://src/router/index.ts#L1-L33)
@@ -484,6 +597,7 @@ P --> H
 1. **预加载机制**：使用`import.meta.glob`在构建时预加载所有图片资源
 2. **懒加载策略**：对于大量图片采用按需加载方式
 3. **缓存机制**：利用浏览器缓存减少重复加载
+4. **头像索引优化**：通过avatarIdx避免重复的头像查找
 
 ### 内存管理
 
@@ -491,6 +605,7 @@ P --> H
 - **事件监听**：及时清理事件监听器避免内存泄漏
 - **定时器管理**：使用`onBeforeUnmount`清理定时器
 - **长按定时器**：自动清理长按检测定时器
+- **模态对话框**：及时清理对话框相关的DOM节点
 
 ### 渲染性能
 
@@ -498,12 +613,14 @@ P --> H
 - **防抖节流**：对高频操作使用防抖节流优化
 - **响应式优化**：合理使用`computed`和`watch`避免不必要的重渲染
 - **动画优化**：使用CSS3硬件加速优化动画性能
+- **头像缓存**：通过avatarImgModules缓存头像资源
 
 ### 新增性能优化
 
 - **手势优化**：使用requestAnimationFrame优化手势响应
 - **菜单定位**：使用计算属性优化菜单位置计算
 - **滑动操作**：优化van-swipe-cell的性能表现
+- **索引计算**：使用一次性计算避免重复的索引分配
 
 ## 故障排除指南
 
@@ -526,6 +643,7 @@ P --> H
 1. 检查图片路径是否正确
 2. 确认图片资源是否正确打包
 3. 验证`import.meta.glob`的配置
+4. 检查头像文件是否存在且格式正确
 
 #### 路由跳转问题
 
@@ -556,9 +674,31 @@ P --> H
 3. 确认硬件加速支持
 4. 检查浏览器兼容性
 
+#### 动态数量管理问题
+
+**问题描述**：好友数量修改后不生效
+
+**解决方案**：
+1. 检查模态对话框的v-model绑定
+2. 验证updateCount函数的逻辑
+3. 确认friendCount的响应式更新
+4. 检查输入验证逻辑
+
+#### 头像索引错误问题
+
+**问题描述**：头像显示错误或重复
+
+**解决方案**：
+1. 检查avatarIdx的计算逻辑
+2. 验证getAvatarImg函数的实现
+3. 确认头像文件命名格式
+4. 检查头像索引的连续性
+
 **章节来源**
 - [src/views/tabBar/index.vue:122-124](file://src/views/tabBar/index.vue#L122-L124)
 - [src/views/tabBar/components/wx.vue:137-172](file://src/views/tabBar/components/wx.vue#L137-L172)
+- [src/views/tabBar/components/address.vue:120-138](file://src/views/tabBar/components/address.vue#L120-L138)
+- [src/views/tabBar/components/address.vue:140-149](file://src/views/tabBar/components/address.vue#L140-L149)
 
 ## 结论
 
@@ -571,4 +711,11 @@ P --> H
 5. **用户体验**：提供流畅的交互体验和良好的视觉效果
 6. **可扩展性**：易于添加新功能和修改现有功能
 
-系统成功复刻了微信H5的核心导航体验，通过新增的微信风格长按菜单、滑动操作、震动反馈和精美动画效果，显著提升了整体用户体验。经过合理的架构设计和性能优化，确保了在移动设备上的良好运行表现和流畅的交互体验。
+**更新** 特别是在地址簿组件方面，实现了重大突破：
+
+- **动态管理能力**：新增好友数量的动态管理功能，提供更好的用户体验
+- **系统化改进**：头像系统完全迁移，实现统一的命名规范和索引管理
+- **智能化分组**：联系人分组系统支持自动头像索引分配，提升管理效率
+- **保持传统优势**：字母索引侧边栏功能保持不变，维持便捷的导航体验
+
+系统成功复刻了微信H5的核心导航体验，通过新增的微信风格长按菜单、滑动操作、震动反馈和精美动画效果，以及地址簿组件的重大改进，显著提升了整体用户体验。经过合理的架构设计和性能优化，确保了在移动设备上的良好运行表现和流畅的交互体验。
