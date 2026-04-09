@@ -69,9 +69,7 @@ function getGridLayout(count) {
 }
 
 // 生成单个群头像
-async function generateGroupAvatar(avatarFiles, index) {
-  // 随机选择3-9个头像（根据截图，最少3人）
-  const memberCount = Math.min(avatarFiles.length, Math.floor(Math.random() * 7) + 3)
+async function generateGroupAvatar(avatarFiles, memberCount, countIndex) {
   const selectedAvatars = avatarFiles
     .sort(() => Math.random() - 0.5)
     .slice(0, memberCount)
@@ -148,11 +146,11 @@ async function generateGroupAvatar(avatarFiles, index) {
     currentY += rowSize + gap
   }
 
-  // 合成图片 - 命名包含头像数量
-  const outputPath = path.join(OUTPUT_DIR, `group-${memberCount}-${String(index + 1).padStart(3, '0')}.jpg`)
+  // 合成图片 - 命名包含头像数量（不补0）
+  const outputPath = path.join(OUTPUT_DIR, `group-${memberCount}-${countIndex}.jpg`)
   await canvas.composite(composites).toFile(outputPath)
 
-  console.log(`  生成: group-${memberCount}-${String(index + 1).padStart(3, '0')}.jpg (${memberCount}人)`)
+  console.log(`  生成: group-${memberCount}-${countIndex}.jpg (${memberCount}人)`)
 }
 
 // 主函数
@@ -170,10 +168,22 @@ async function main() {
   console.log(`输出目录: ${OUTPUT_DIR}`)
   console.log('')
 
-  // 生成20个不同的群头像
+  // 每种人数的计数器
+  const countByMember = {}
+
+  // 生成50个不同的群头像
   const GROUP_COUNT = 50
   for (let i = 0; i < GROUP_COUNT; i++) {
-    await generateGroupAvatar(avatarFiles, i)
+    // 随机选择3-9个头像
+    const memberCount = Math.min(avatarFiles.length, Math.floor(Math.random() * 7) + 3)
+
+    // 初始化该人数的计数器
+    if (!countByMember[memberCount]) {
+      countByMember[memberCount] = 0
+    }
+    countByMember[memberCount]++
+
+    await generateGroupAvatar(avatarFiles, memberCount, countByMember[memberCount])
   }
 
   console.log(`完成! 共生成 ${GROUP_COUNT} 个群头像`)
