@@ -110,12 +110,16 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
+import { useAppStore } from '@/store/modules/app'
 import IconNewFriend from '@/assets/images/icon/new-friend.png'
 import IconTalkFriend from '@/assets/images/icon/talk-friend.png'
 import IconGroupChat from '@/assets/images/icon/group-chat.png'
 import IconTag from '@/assets/images/icon/tag.png'
 import IconOfficialAccounts from '@/assets/images/icon/official-accounts.png'
 import IconCompanyWx from '@/assets/images/icon/company-wx-friend.png'
+
+const appStore = useAppStore()
 
 // 弹窗控制
 const showModal = ref(false)
@@ -169,167 +173,8 @@ const indexList1 = [
   },
 ]
 
-// 联系人分组（startIdx 会在计算时自动修正）
-const contactGroupsRaw = [
-  {
-    letter: 'A',
-    list: [
-      { name: 'A' },
-      { name: 'A0 合肥·领达·汽车维修《宋瑞》' },
-      { name: 'A9.（微信两分钟不回打电话）' },
-      { name: '啊啊啊啊啊啊' },
-      { name: '阿狸' },
-      { name: 'AAA烧烤天下（2号）' },
-    ],
-  },
-  {
-    letter: 'B',
-    list: [
-      { name: '百年工匠' },
-      { name: 'Boarding' },
-      { name: '八百万' },
-      { name: 'Bin' },
-      { name: '白色天空' },
-      { name: '毕业设计-小王' },
-    ],
-  },
-  {
-    letter: 'C',
-    list: [
-      { name: 'Camelia' },
-      { name: '陈芳芳（2）' },
-      { name: '陈艳' },
-      { name: '陈燕' },
-      { name: '程叔叔' },
-      { name: '春天花开' },
-      { name: '超市老板娘' },
-    ],
-  },
-  {
-    letter: 'D',
-    list: [
-      { name: '大壮' },
-      { name: '丁锦' },
-      { name: '戴剑敏' },
-      { name: 'David' },
-      { name: '当当网上书店' },
-    ],
-  },
-  {
-    letter: 'F',
-    list: [
-      { name: '广标硬件-陈' },
-      { name: '风轻云淡' },
-      { name: '缝纫机维修小杨' },
-      { name: 'Flutter群主' },
-    ],
-  },
-  {
-    letter: 'G',
-    list: [
-      { name: '工作群' },
-      { name: '管理员' },
-      { name: '高小姐' },
-    ],
-  },
-  {
-    letter: 'H',
-    list: [
-      { name: '胡伟立' },
-      { name: '黄子墨' },
-      { name: '红叶' },
-      { name: '海纳百川' },
-      { name: 'Helen' },
-    ],
-  },
-  {
-    letter: 'J',
-    list: [
-      { name: '建明' },
-      { name: '金融-刘经理' },
-      { name: '加班狗' },
-    ],
-  },
-  {
-    letter: 'L',
-    list: [
-      { name: '李伟' },
-      { name: '丽丽' },
-      { name: '路飞' },
-      { name: '罗心悦' },
-      { name: '领导' },
-      { name: '老妈' },
-      { name: '老婆' },
-    ],
-  },
-  {
-    letter: 'M',
-    list: [
-      { name: '麻辣烫-小张' },
-      { name: '美团外卖' },
-      { name: 'Mike' },
-    ],
-  },
-  {
-    letter: 'S',
-    list: [
-      { name: 'Sina' },
-      { name: '师傅' },
-      { name: '孙小姐' },
-      { name: '学姐' },
-    ],
-  },
-  {
-    letter: 'W',
-    list: [
-      { name: '王陵（北京顾客）' },
-      { name: '王小军' },
-      { name: '吴怡' },
-      { name: '王老师' },
-      { name: '外卖小哥' },
-    ],
-  },
-  {
-    letter: 'X',
-    list: [
-      { name: '小兔乖乖' },
-      { name: '小阿飞' },
-      { name: '询价-刘经理' },
-      { name: '小明同学' },
-    ],
-  },
-  {
-    letter: 'Y',
-    list: [
-      { name: '英卫小公主' },
-      { name: '杨师傅' },
-      { name: '一号店长' },
-    ],
-  },
-  {
-    letter: 'Z',
-    list: [
-      { name: '郑有海' },
-      { name: '张三' },
-      { name: '周杰伦' },
-      { name: '赵丽颖' },
-    ],
-  },
-]
-
-// 计算带正确 startIdx 的联系人分组
-const contactGroups = (() => {
-  let avatarIdx = 1
-  return contactGroupsRaw.map(group => ({
-    ...group,
-    startIdx: avatarIdx,
-    list: group.list.map((item, idx) => ({
-      ...item,
-      avatarIdx: avatarIdx + idx,
-    })),
-    _endIdx: (avatarIdx += group.list.length),
-  }))
-})()
+// 从 store 获取通讯录数据
+const contactGroups = appStore.contactGroups
 
 // 右侧字母索引
 const indexLetters = [
