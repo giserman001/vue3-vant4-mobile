@@ -229,16 +229,17 @@ const usedGroupAvatars = ref<Set<string>>(new Set()) // 已使用的群头像标
 
 // 群头像配置
 const GROUP_AVATAR_CONFIG = {
-  minSize: 3, // 最少3人成群
+  minSize: 2, // 最少2人
   maxSize: 9,
   countPerSize: { // 每个人数对应的头像数量
-    3: 9,
-    4: 4,
-    5: 9,
-    6: 10,
-    7: 3,
-    8: 3,
-    9: 7,
+    2: 13, // 2人头像有13个
+    3: 18,
+    4: 16,
+    5: 12,
+    6: 14,
+    7: 15,
+    8: 16,
+    9: 15,
   },
 }
 
