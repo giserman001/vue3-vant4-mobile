@@ -10,6 +10,13 @@ export function openDB(dbName: string, storeName: string, version = 1): Promise<
 
     request.onsuccess = function (event) {
       db = (event.target as IDBOpenDBRequest).result
+      // 检查存储是否存在，不存在则增加版本号重新创建
+      if (!db.objectStoreNames.contains(storeName)) {
+        db.close()
+        // 增加版本号重新打开以触发 onupgradeneeded
+        resolve(openDB(dbName, storeName, version + 1))
+        return
+      }
       resolve(db)
     }
 

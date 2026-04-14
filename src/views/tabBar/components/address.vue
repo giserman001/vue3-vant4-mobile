@@ -142,13 +142,13 @@ function updateCount() {
 }
 
 // 预加载所有头像图片
-const avatarImgModules = import.meta.glob('@/assets/images/avatar/*.jpg', {
+const avatarImgModules = import.meta.glob('@/assets/images/address-book/*.jpg', {
   eager: true,
   import: 'default',
 }) as Record<string, string>
 
 function getAvatarImg(num: number): string {
-  const key = `/src/assets/images/avatar/avatar-${num}.jpg`
+  const key = `/src/assets/images/address-book/${num}.jpg`
   return avatarImgModules[key] || ''
 }
 

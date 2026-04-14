@@ -16,6 +16,15 @@ import App from './App.vue'
 import router, { setupRouter } from './router'
 import { setupStore } from '@/store'
 
+// 开发环境启用 vconsole
+if (import.meta.env.DEV) {
+  import('vconsole').then((module) => {
+    const VConsole = module.default
+    // eslint-disable-next-line no-new
+    new VConsole()
+  })
+}
+
 async function bootstrap() {
   const app = createApp(App)
   // 挂载状态管理

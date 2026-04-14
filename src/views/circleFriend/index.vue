@@ -400,8 +400,18 @@ function beforeClose(action: string): boolean {
 watch(show, val => setMetaColor(val ? '#000' : '#ededed'))
 
 onMounted(async () => {
-  db.value = await IndexDB.openDB(DB_NAME, STORE_NAME)
-  getAllHistory()
+  try {
+    // 尝试打开数据库，如果存储不存在会增加版本号重新创建
+    db.value = await IndexDB.openDB(DB_NAME, STORE_NAME, 1)
+    getAllHistory()
+  }
+  catch (error) {
+    console.error('IndexDB 初始化失败:', error)
+    // 如果失败，尝试删除旧数据库重新创建
+    await IndexDB.deleteDBAll(DB_NAME)
+    db.value = await IndexDB.openDB(DB_NAME, STORE_NAME, 1)
+    getAllHistory()
+  }
 })
 </script>
 

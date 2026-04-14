@@ -40,6 +40,7 @@ function getAvatarFiles() {
 // 计算宫格布局 - 根据微信截图的规则
 function getGridLayout(count) {
   // 根据截图：
+  // 2人：1行2列，左右排列
   // 3人：1行3列，头像较小，水平排列在中间
   // 4人：2x2，填满
   // 5人：2行，第一行2个，第二行3个，整体居中
@@ -49,6 +50,8 @@ function getGridLayout(count) {
   // 9人：3x3，填满
 
   const layouts = {
+    // 2人：1行2列，左右排列
+    2: { rows: 1, cols: 2, size: 58, gap: 3 },
     // 3人：第一行1个，第二行2个，头像一样大
     3: { rows: 2, cols: [1, 2], size: 56, gap: 3 },
     // 4人：2x2
@@ -172,10 +175,10 @@ async function main() {
   const countByMember = {}
 
   // 生成50个不同的群头像
-  const GROUP_COUNT = 50
+  const GROUP_COUNT = 100
   for (let i = 0; i < GROUP_COUNT; i++) {
-    // 随机选择3-9个头像
-    const memberCount = Math.min(avatarFiles.length, Math.floor(Math.random() * 7) + 3)
+    // 随机选择2-9个头像（包含2和9）
+    const memberCount = Math.min(avatarFiles.length, Math.floor(Math.random() * 8) + 2)
 
     // 初始化该人数的计数器
     if (!countByMember[memberCount]) {

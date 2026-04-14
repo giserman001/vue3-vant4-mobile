@@ -2,6 +2,7 @@ import { resolve } from 'node:path'
 import type { ConfigEnv, UserConfig } from 'vite'
 import { loadEnv } from 'vite'
 import { format } from 'date-fns'
+import mkcert from 'vite-plugin-mkcert'
 import { wrapperEnv } from './build/utils'
 import { createVitePlugins } from './build/vite/plugin'
 import { OUTPUT_DIR } from './build/constant'
@@ -177,6 +178,6 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
     },
 
     // 加载插件
-    plugins: createVitePlugins(viteEnv, isBuild, prodMock),
+    plugins: [...createVitePlugins(viteEnv, isBuild, prodMock), mkcert()],
   }
 }

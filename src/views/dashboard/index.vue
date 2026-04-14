@@ -1,7 +1,7 @@
 <template>
   <div class="h-screen flex flex-col items-center justify-center p-60px">
     <div class="wel-box w-full flex flex-col items-center justify-between">
-      <div class="page-title mb-4 mt-12 text-center">
+      <div class="page-title mb-4 mt-12 cursor-pointer text-center" @click="goToTabBar">
         {{ title }}
       </div>
       <div class="mb-6 mt-4 w-full">
@@ -25,6 +25,7 @@
 </template>
 
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
 import { useDesignSettingStore } from '@/store/modules/designSetting'
 import { useGlobSetting } from '@/hooks/setting'
 
@@ -32,8 +33,13 @@ defineOptions({
   name: 'DashboardPage',
 })
 
+const router = useRouter()
 const designStore = useDesignSettingStore()
 const globSetting = useGlobSetting()
+
+function goToTabBar() {
+  router.push('/tabBar')
+}
 
 const { title } = globSetting
 

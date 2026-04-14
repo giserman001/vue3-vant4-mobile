@@ -79,6 +79,10 @@ export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean, prodMock: 
   vitePlugins.push(
     VitePWA({
       registerType: 'autoUpdate',
+      // 开发模式下也启用 PWA，允许局域网内测试添加到主屏幕
+      devOptions: {
+        enabled: true,
+      },
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
       manifest: {
         name: '微信',
@@ -92,14 +96,16 @@ export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean, prodMock: 
         orientation: 'portrait',
         icons: [
           {
-            src: '/logo-192.svg',
+            src: '/logo.svg',
             sizes: '192x192',
             type: 'image/svg+xml',
+            purpose: 'any maskable',
           },
           {
-            src: '/logo-512.svg',
+            src: '/logo.svg',
             sizes: '512x512',
             type: 'image/svg+xml',
+            purpose: 'any maskable',
           },
         ],
       },
@@ -147,10 +153,6 @@ export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean, prodMock: 
             },
           },
         ],
-      },
-      devOptions: {
-        enabled: true,
-        type: 'module',
       },
     }),
   )

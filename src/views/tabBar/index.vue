@@ -80,16 +80,21 @@
     </div>
     <!-- 底部安全区 -->
     <div class="van-safe-area-bottom" />
+
+    <!-- 添加聊天弹窗 -->
+    <AddChatModal ref="addChatModalRef" />
   </div>
 </template>
 
 <script lang="ts" setup>
+import { computed, ref } from 'vue'
 import { useLocalStorage } from '@vueuse/core'
 import { showToast } from 'vant'
 import Wx from './components/wx.vue'
 import Address from './components/address.vue'
 import Find from './components/find.vue'
 import Mine from './components/mine.vue'
+import AddChatModal from '@/components/AddChatModal.vue'
 
 import ImgWxActive from '@/assets/images/wx.png'
 import ImgWxInactive from '@/assets/images/wx-active.png'
@@ -133,9 +138,16 @@ const popupMenus = [
   { icon: 'i-wx-payment', text: '收付款' },
 ]
 
+const addChatModalRef = ref<InstanceType<typeof AddChatModal>>()
+
 function onPopupMenuClick(text: string) {
   showPopup.value = false
-  showToast(text)
+  if (text === '发起群聊' || text === '添加朋友') {
+    addChatModalRef.value?.open()
+  }
+  else {
+    showToast(text)
+  }
 }
 
 const tabbars = ref<TabBarItem[]>([
