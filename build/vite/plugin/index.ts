@@ -82,7 +82,10 @@ export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean, prodMock: 
       // 开发模式下也启用 PWA，允许局域网内测试添加到主屏幕
       devOptions: {
         enabled: true,
+        // 开发模式下也生成 manifest
+        type: 'module',
       },
+      manifestFilename: 'manifest.webmanifest',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
       manifest: {
         name: '微信',
