@@ -12,13 +12,16 @@
 - [build/constant.ts](file://build/constant.ts)
 - [build/vite/plugin/html.ts](file://build/vite/plugin/html.ts)
 - [build/vite/plugin/compress.ts](file://build/vite/plugin/compress.ts)
+- [dist/index.html](file://dist/index.html)
 </cite>
 
 ## 更新摘要
 **变更内容**
-- 更新服务工作者修订哈希值从 '0.h53gj30gqs8' 到 '0.mjc8h096dog'
-- 维护构建配置状态的准确性
-- 保持功能实现不变，仅更新构建产物标识符
+- 更新开发环境PWA支持：完整PWA功能在开发模式下可用
+- 增强服务工作者修订更新机制
+- 新增模块化PWA类型支持
+- 完善清单文件生成配置
+- 更新服务工作者修订哈希值从 '0.h53gj30gqs8' 更新为 '0.mjc8h096dog'
 
 ## 目录
 1. [简介](#简介)
@@ -29,13 +32,14 @@
 6. [依赖关系分析](#依赖关系分析)
 7. [性能考虑](#性能考虑)
 8. [故障排除指南](#故障排除指南)
-9. [结论](#结论)
+9. [构建配置更新](#构建配置更新)
+10. [结论](#结论)
 
 ## 简介
 
 这是一个基于Vue3和Vite构建的移动端微信H5应用的PWA支持系统。该系统实现了完整的渐进式Web应用功能，包括Service Worker注册、离线缓存、应用清单管理和自动更新机制。
 
-PWA支持系统的核心目标是在移动设备上提供类似原生应用的用户体验，通过离线访问、推送通知、安装到主屏幕等功能提升用户粘性和应用可用性。
+PWA支持系统的核心目标是在移动设备上提供类似原生应用的用户体验，通过离线访问、推送通知、安装到主屏幕等功能提升用户粘性和应用可用性。最新的更新增强了开发环境下的PWA支持，使开发者能够在开发模式下完整测试PWA功能。
 
 ## 项目结构
 
@@ -47,20 +51,27 @@ subgraph "构建配置层"
 Vite[Vite配置]
 Plugins[插件系统]
 Constants[常量配置]
+PWA[PWA插件配置]
 end
 subgraph "运行时层"
 Main[应用入口]
 SW[Service Worker]
 Manifest[应用清单]
+Register[注册模块]
 end
 subgraph "构建产物层"
 DevSW[开发环境SW]
 ProdSW[生产环境SW]
 Assets[静态资源]
+ManifestFile[清单文件]
 end
 Vite --> Plugins
-Plugins --> Main
-Main --> SW
+Plugins --> PWA
+PWA --> DevSW
+PWA --> ProdSW
+PWA --> ManifestFile
+Main --> Register
+Register --> SW
 SW --> Manifest
 Vite --> DevSW
 Vite --> ProdSW
@@ -70,11 +81,11 @@ ProdSW --> Assets
 
 **图表来源**
 - [vite.config.ts:27-181](file://vite.config.ts#L27-L181)
-- [build/vite/plugin/index.ts:78-156](file://build/vite/plugin/index.ts#L78-L156)
+- [build/vite/plugin/index.ts:78-161](file://build/vite/plugin/index.ts#L78-L161)
 
 **章节来源**
-- [vite.config.ts:1-183](file://vite.config.ts#L1-L183)
-- [build/vite/plugin/index.ts:1-160](file://build/vite/plugin/index.ts#L1-L160)
+- [vite.config.ts:1-184](file://vite.config.ts#L1-L184)
+- [build/vite/plugin/index.ts:1-165](file://build/vite/plugin/index.ts#L1-L165)
 
 ## 核心组件
 
@@ -83,9 +94,11 @@ ProdSW --> Assets
 项目使用vite-plugin-pwa插件实现PWA功能，配置包含以下关键特性：
 
 - **自动更新机制**: `registerType: 'autoUpdate'` 实现无缝更新
+- **开发模式支持**: `devOptions.enabled: true` 允许开发环境下测试PWA功能
+- **模块化类型**: `devOptions.type: 'module'` 生成模块化PWA类型
 - **应用清单**: 完整的manifest配置，支持iOS和Android平台
 - **Workbox集成**: 基于Workbox的智能缓存策略
-- **开发模式支持**: devOptions启用开发环境下的PWA功能
+- **清单文件生成**: `manifestFilename: 'manifest.webmanifest'` 自动生成清单文件
 
 ### Service Worker管理
 
@@ -105,7 +118,7 @@ ProdSW --> Assets
 - **预缓存**: 预加载关键资源
 
 **章节来源**
-- [build/vite/plugin/index.ts:78-156](file://build/vite/plugin/index.ts#L78-L156)
+- [build/vite/plugin/index.ts:78-161](file://build/vite/plugin/index.ts#L78-L161)
 - [dev-dist/sw.js:70-112](file://dev-dist/sw.js#L70-L112)
 
 ## 架构概览
@@ -179,6 +192,7 @@ class VitePWAConfig {
 +manifest : ManifestConfig
 +workbox : WorkboxConfig
 +devOptions : DevOptions
++manifestFilename : string
 }
 class ManifestConfig {
 +name : string
@@ -206,8 +220,13 @@ class CacheOptions {
 +expiration : ExpirationConfig
 +cacheableResponse : CacheableResponseConfig
 }
+class DevOptions {
++enabled : boolean
++type : string
+}
 VitePWAConfig --> ManifestConfig
 VitePWAConfig --> WorkboxConfig
+VitePWAConfig --> DevOptions
 WorkboxConfig --> RuntimeCacheRule
 RuntimeCacheRule --> CacheOptions
 ```
@@ -253,6 +272,7 @@ subgraph "核心依赖"
 VitePWA[vite-plugin-pwa]
 Workbox[workbox-window]
 Vue[Vue 3]
+PWARegister[virtual:pwa-register]
 end
 subgraph "构建工具"
 Vite[Vite]
@@ -268,7 +288,7 @@ VitePWA --> Workbox
 Vue --> Workbox
 VitePWA --> Rollup
 Rollup --> Terser
-PWA_DTS --> Workbox
+PWA_DTS --> PWARegister
 Types --> PWA_DTS
 ```
 
@@ -319,6 +339,11 @@ Types --> PWA_DTS
 - 检查缓存策略配置
 - 验证资源预缓存清单
 
+**开发环境PWA功能不可用**
+- 确认devOptions.enabled设置为true
+- 检查开发服务器配置
+- 验证Service Worker文件生成
+
 **章节来源**
 - [src/main.ts:31-39](file://src/main.ts#L31-L39)
 - [dev-dist/sw.js:72-73](file://dev-dist/sw.js#L72-L73)
@@ -343,6 +368,25 @@ Types --> PWA_DTS
 **章节来源**
 - [dev-dist/sw.js:80-83](file://dev-dist/sw.js#L80-L83)
 
+### 开发环境PWA增强配置
+
+**新增功能**: 完整PWA功能在开发模式下可用
+
+**更新内容**:
+- 启用开发环境PWA支持: `devOptions.enabled: true`
+- 模块化PWA类型: `devOptions.type: 'module'`
+- 清单文件生成: `manifestFilename: 'manifest.webmanifest'`
+- 开发环境测试: 允许局域网内测试添加到主屏幕
+
+**更新详情**:
+- 开发环境支持: 全面的PWA功能测试能力
+- 类型支持: 模块化JavaScript支持
+- 清单生成: 自动生成manifest.webmanifest文件
+- 测试便利: 开发服务器可直接测试PWA功能
+
+**章节来源**
+- [build/vite/plugin/index.ts:82-87](file://build/vite/plugin/index.ts#L82-L87)
+
 ## 结论
 
 该PWA支持系统通过精心设计的架构和优化的缓存策略，为Vue3微信H5应用提供了完整的渐进式Web应用体验。系统的主要优势包括：
@@ -351,7 +395,8 @@ Types --> PWA_DTS
 2. **智能缓存策略**: 多层次缓存确保最佳性能
 3. **开发友好**: 支持开发和生产环境的差异化配置
 4. **可扩展性**: 模块化的插件架构便于功能扩展
+5. **增强的开发体验**: 开发环境下的完整PWA功能支持
 
 通过合理的配置和持续的优化，该系统能够为用户提供接近原生应用的移动Web体验，同时保持良好的开发效率和维护性。
 
-**更新**: 最新构建配置已反映修订哈希更新，确保构建产物的准确性和缓存管理的有效性。
+**更新**: 最新构建配置已反映修订哈希更新和开发环境PWA增强功能，确保构建产物的准确性和缓存管理的有效性，同时提供完整的开发环境PWA测试支持。

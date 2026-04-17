@@ -25,6 +25,16 @@ if (import.meta.env.DEV) {
   })
 }
 
+// 禁用移动端下拉刷新（iOS 和 Android）
+document.addEventListener('touchmove', (e) => {
+  if (e.target === document.body || e.target === document.documentElement) {
+    e.preventDefault()
+  }
+}, { passive: false })
+
+// 禁用 pull-to-refresh
+document.body.style.overscrollBehavior = 'none'
+
 async function bootstrap() {
   const app = createApp(App)
   // 挂载状态管理
@@ -35,18 +45,16 @@ async function bootstrap() {
   // 路由准备就绪后挂载APP实例
   app.mount('#app', true)
 
-  // 注册 Service Worker（仅在生产环境）
-  if (import.meta.env.PROD) {
-    registerSW({
-      immediate: true,
-      onRegistered(r) {
-        console.log('PWA Service Worker 已注册:', r)
-      },
-      onRegisterError(error) {
-        console.error('PWA Service Worker 注册失败:', error)
-      },
-    })
-  }
+  // 注册 Service Worker（开发和生产环境都启用，支持 PWA 调试）
+  registerSW({
+    immediate: true,
+    onRegistered(r) {
+      console.log('PWA Service Worker 已注册:', r)
+    },
+    onRegisterError(error) {
+      console.error('PWA Service Worker 注册失败:', error)
+    },
+  })
 }
 
 void bootstrap()
