@@ -165,6 +165,18 @@ const routeModuleList: Array<RouteRecordRaw> = [
     },
     component: () => import('@/views/chat/index.vue'),
   },
+
+  // 错误页面
+  {
+    path: '/error',
+    name: 'ErrorPage',
+    meta: {
+      title: '网络出错',
+      innerPage: true,
+      hiddenHeader: true,
+    },
+    component: () => import('@/views/exception/ErrorPage.vue'),
+  },
 ]
 
 export default routeModuleList

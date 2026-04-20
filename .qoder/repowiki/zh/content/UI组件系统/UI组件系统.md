@@ -28,11 +28,10 @@
 
 ## 更新摘要
 **所做更改**
-- 新增Tabbar导航系统架构分析
-- 新增四个主要功能模块组件详解（微信聊天、地址簿、发现、个人资料）
-- 更新路由配置以支持Tabbar导航
-- 新增状态管理与用户信息展示
-- 更新组件依赖关系分析以反映新的导航架构
+- 新增WeChat主题SVG图标支持分析
+- 更新Logo组件实现细节，包含WeChat logo SVG文件说明
+- 新增WeChat图标系统配置与使用规范
+- 更新图标系统章节，包含WeChat主题图标集成
 
 ## 目录
 1. [简介](#简介)
@@ -50,6 +49,8 @@
 
 ## 简介
 本文件系统性梳理 Vue3 微信 H5 移动端项目的 UI 组件体系，覆盖基础组件（Logo、SvgIcon）、布局系统（顶部/底部/浮动导航）、页面组件（仪表板、示例、消息、个人中心）以及新增的Tabbar导航系统和四个主要功能模块（微信聊天、地址簿、发现、个人资料）。文档提供组件 API、使用示例、样式定制与响应式适配策略，并给出扩展与自定义的最佳实践。
+
+**更新** 新增WeChat主题SVG图标支持，包括完整的WeChat logo SVG文件，尺寸为512x512像素，具有绿色圆形背景和白色气泡形状特征。
 
 ## 项目结构
 项目采用按功能域分层的组织方式：
@@ -140,6 +141,7 @@ P1 --> U2
 - NavBar 页面导航：基于 Vant 导航栏，自动读取路由 meta.title，支持左右插槽。
 - 设计配置与状态：统一的主题色、深浅色模式、页面动画配置；通过 Pinia Store 持久化。
 - **新增** Tabbar导航系统：完整的微信风格底部导航，支持徽章、红点提醒和页面切换。
+- **新增** WeChat主题SVG图标：包含完整的WeChat logo SVG文件，尺寸为512x512像素，具有绿色圆形背景和白色气泡形状特征。
 
 **章节来源**
 - [Logo.vue:1-52](file://src/components/Logo.vue#L1-L52)
@@ -183,6 +185,7 @@ T->>M : 显示个人资料模块 (if current===3)
 - 功能要点
   - 根据当前主题选择图标源：若为默认主题则使用 SvgIcon 渲染内置图标；否则使用内联 SVG，通过线性渐变填充主题色。
   - 主题色通过设计 Store 获取，颜色透明度通过工具函数转换为 RGBA。
+  - **更新** 支持WeChat主题SVG图标，包含完整的WeChat logo SVG文件，尺寸为512x512像素，具有绿色圆形背景和白色气泡形状特征。
 - 关键实现路径
   - 主题判断与图标选择：[Logo.vue:3-40](file://src/components/Logo.vue#L3-L40)
   - 渐变色生成与填充：[Logo.vue:6-32](file://src/components/Logo.vue#L6-L32)
@@ -518,6 +521,7 @@ C --> D["右侧字母索引"]
   - 个人资料模块依赖应用状态管理
 - 图标系统
   - UnoCSS 图标预设与 safelist 确保运行时类名可用
+  - **更新** WeChat主题SVG图标集成到图标系统中
 
 ```mermaid
 graph TB
@@ -575,6 +579,9 @@ My["my/index.vue"] --> DS
   - 参考路径：[wx.vue:44-52](file://src/views/tabBar/components/wx.vue#L44-L52)，[address.vue:82-85](file://src/views/tabBar/components/address.vue#L82-L85)
 - **新增** Tabbar状态管理
   - Tabbar模块间通过状态管理协调，避免不必要的重新渲染。
+- **新增** WeChat主题SVG图标优化
+  - WeChat logo SVG文件经过压缩优化，减少文件体积
+  - 支持渐变色动态渲染，无需额外图标文件
 
 **章节来源**
 - [layout/index.vue:8-12](file://src/layout/index.vue#L8-L12)
@@ -601,6 +608,10 @@ My["my/index.vue"] --> DS
 - **新增** 图片加载失败
   - 检查import.meta.glob的路径配置是否正确
   - 确认图片文件是否存在且命名格式匹配
+- **新增** WeChat主题SVG图标问题
+  - 检查WeChat logo SVG文件路径是否正确
+  - 确认渐变色渲染逻辑是否正常工作
+  - 验证主题色切换时SVG图标的显示效果
 
 **章节来源**
 - [designSettingStore.ts:34-45](file://src/store/modules/designSetting.ts#L34-L45)
@@ -614,7 +625,11 @@ My["my/index.vue"] --> DS
 - [tabBar/components/wx.vue:44-52](file://src/views/tabBar/components/wx.vue#L44-L52)
 
 ## 结论
-该 UI 组件系统以"可复用组件 + 布局壳层 + 页面组件 + Tabbar导航系统"为核心，结合 UnoCSS 图标预设与 Pinia 设计 Store，实现了主题色统一、暗色模式适配与良好的移动端体验。**新增的Tabbar导航系统完整实现了微信H5应用的核心功能架构，包含四个主要功能模块（微信聊天、地址簿、发现、个人资料），并通过状态管理和图片预加载优化提升了用户体验。**通过 KeepAlive、指示器优化和图片预加载等技术手段，兼顾性能与交互流畅性。建议在新增组件时遵循现有命名与样式约定，确保一致的可维护性与扩展性。
+该 UI 组件系统以"可复用组件 + 布局壳层 + 页面组件 + Tabbar导航系统"为核心，结合 UnoCSS 图标预设与 Pinia 设计 Store，实现了主题色统一、暗色模式适配与良好的移动端体验。**新增的Tabbar导航系统完整实现了微信H5应用的核心功能架构，包含四个主要功能模块（微信聊天、地址簿、发现、个人资料），并通过状态管理和图片预加载优化提升了用户体验。**通过 KeepAlive、指示器优化和图片预加载等技术手段，兼顾性能与交互流畅性。
+
+**更新** WeChat主题SVG图标支持进一步增强了项目的品牌一致性，WeChat logo SVG文件经过优化处理，具有512x512像素的高清分辨率，包含绿色圆形背景和白色气泡形状特征，支持动态渐变色渲染，为用户提供更加专业的视觉体验。
+
+建议在新增组件时遵循现有命名与样式约定，确保一致的可维护性与扩展性。
 
 ## 附录
 
@@ -622,6 +637,7 @@ My["my/index.vue"] --> DS
 
 - Logo
   - 无显式属性；内部根据主题选择渲染方式
+  - **更新** 支持WeChat主题SVG图标渲染
   - 参考路径：[Logo.vue:1-52](file://src/components/Logo.vue#L1-L52)
 
 - SvgIcon
@@ -665,6 +681,11 @@ My["my/index.vue"] --> DS
   - 通过 UnoCSS 图标预设在运行时生成 CSS 类名，使用 :class="i-ph:xxx" 形式
   - 若使用动态类名，需在 uno.config.ts 的 safelist 中声明
   - 参考路径：[uno.config.ts:28-34](file://uno.config.ts#L28-L34)，[uno.config.ts:77-82](file://uno.config.ts#L77-L82)
+- **新增** WeChat主题图标
+  - 使用 FileSystemIconLoader 加载 WeChat 图标集合
+  - 支持动态渐变色渲染的 WeChat logo SVG 文件
+  - 图标前缀：wx、wx-mine
+  - 参考路径：[uno.config.ts:29-39](file://uno.config.ts#L29-L39)
 
 ### 样式定制与响应式适配
 - 主题色变量
@@ -689,3 +710,8 @@ My["my/index.vue"] --> DS
 - 状态管理
   - 用户信息通过useAppStore获取
   - 支持用户头像、昵称、微信号等信息展示
+- **新增** WeChat主题SVG图标
+  - 支持动态渐变色渲染
+  - 512x512像素高清分辨率
+  - 绿色圆形背景和白色气泡形状特征
+  - 适用于Logo组件的主题切换场景
