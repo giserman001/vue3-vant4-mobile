@@ -6,6 +6,7 @@
         v-for="(item, idx) in topList"
         :key="item.label"
         class="flex items-center pl-12px"
+        @click="item.onClick"
       >
         <img :src="item.icon" alt="" class="mr-12px h-40px w-40px shrink-0 rounded-6px">
         <div
@@ -111,6 +112,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useAppStore } from '@/store/modules/app'
 import IconNewFriend from '@/assets/images/icon/new-friend.png'
 import IconTalkFriend from '@/assets/images/icon/talk-friend.png'
@@ -119,6 +121,7 @@ import IconTag from '@/assets/images/icon/tag.png'
 import IconOfficialAccounts from '@/assets/images/icon/official-accounts.png'
 import IconCompanyWx from '@/assets/images/icon/company-wx-friend.png'
 
+const router = useRouter()
 const appStore = useAppStore()
 
 // 弹窗控制
@@ -152,14 +155,19 @@ function getAvatarImg(num: number): string {
   return avatarImgModules[key] || ''
 }
 
+// 跳转到错误页面
+function goToError() {
+  router.push('/error')
+}
+
 // 功能入口列表
 const topList = [
-  { icon: IconNewFriend, label: '新的朋友' },
-  { icon: IconTalkFriend, label: '仅聊天的朋友' },
-  { icon: IconGroupChat, label: '群聊' },
-  { icon: IconTag, label: '标签' },
-  { icon: IconOfficialAccounts, label: '公众号' },
-  { icon: IconCompanyWx, label: '服务号' },
+  { icon: IconNewFriend, label: '新的朋友', onClick: goToError },
+  { icon: IconTalkFriend, label: '仅聊天的朋友', onClick: goToError },
+  { icon: IconGroupChat, label: '群聊', onClick: goToError },
+  { icon: IconTag, label: '标签', onClick: goToError },
+  { icon: IconOfficialAccounts, label: '公众号', onClick: goToError },
+  { icon: IconCompanyWx, label: '服务号', onClick: goToError },
 ]
 
 // 企业微信分组
