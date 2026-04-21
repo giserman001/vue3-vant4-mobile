@@ -10,32 +10,33 @@ const processedCircleFriendData = circleFriendData.map((item: any) => ({
   tip: false,
 }))
 
+// 个人用户信息
 export interface UserInfo {
-  avatar: string
-  name: string
-  wxNumber: string
-  local: string
-  gender: number
-  bgImg: string
+  avatar: string // 头像
+  name: string // 昵称
+  wxNumber: string // 微信号
+  local: string // 地区
+  gender: number // 性别：1 男，0 女
+  bgImg: string // 个人页背景图
 }
 
 // 聊天消息
 export interface ChatMessage {
-  content: string
-  isFriend: boolean
-  time: string
-  showTime: boolean
-  type?: 'message' | 'system' // 默认 message，system 为系统提示
+  content: string // 消息内容
+  isFriend: boolean // 是否为好友发送（true 左侧，false 右侧）
+  time: string // 消息时间
+  showTime: boolean // 是否显示时间分隔线
+  type?: 'message' | 'system' // 消息类型：message 普通消息（默认），system 系统提示
 }
 
 // 聊天列表项
 export interface ChatListItem {
-  id: number
-  name: string
-  avatar: string
-  messages: ChatMessage[]
-  unread: number
-  top: boolean
+  id: number // 聊天唯一标识
+  name: string // 聊天名称（好友昵称/群名）
+  avatar: string // 头像地址
+  messages: ChatMessage[] // 消息列表
+  unread: number // 未读消息数
+  top: boolean // 是否置顶
 }
 
 // 自己头像
