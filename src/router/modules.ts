@@ -166,6 +166,28 @@ const routeModuleList: Array<RouteRecordRaw> = [
     component: () => import('@/views/chat/index.vue'),
   },
 
+  // 用户资料页（自己/他人通用）
+  {
+    path: '/userProfile',
+    name: 'UserProfileSelf',
+    meta: {
+      title: '个人信息',
+      innerPage: true,
+      hiddenHeader: true,
+    },
+    component: () => import('@/views/userProfile/index.vue'),
+  },
+  {
+    path: '/userProfile/:id',
+    name: 'UserProfileOther',
+    meta: {
+      title: '个人信息',
+      innerPage: true,
+      hiddenHeader: true,
+    },
+    component: () => import('@/views/userProfile/index.vue'),
+  },
+
   // 错误页面
   {
     path: '/error',

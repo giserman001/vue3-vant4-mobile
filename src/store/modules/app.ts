@@ -25,6 +25,7 @@ export interface ChatMessage {
   isFriend: boolean
   time: string
   showTime: boolean
+  type?: 'message' | 'system' // 默认 message，system 为系统提示
 }
 
 // 聊天列表项
@@ -205,6 +206,24 @@ function generateChatMessages(friendName: string, _friendAvatar: string): ChatMe
     { content: '你好', isFriend: true, time: `${today} 09:00`, showTime: true },
     { content: '你好', isFriend: false, time: `${today} 09:01`, showTime: false },
   ]
+}
+
+// 打招呼消息池
+const greetingMessages = [
+  '你好，很高兴认识你！',
+  '你好呀~',
+  '嘿，交个朋友吧！',
+  '你好，我是通过通讯录添加你的',
+  '你好，可以认识一下吗？',
+  '你好！',
+  '嘿，在吗？',
+  '你好，很高兴能加你好友',
+  '哈喽，终于加上你了！',
+  'Hi，我是你的新朋友！',
+]
+
+function getRandomGreeting(): string {
+  return greetingMessages[Math.floor(Math.random() * greetingMessages.length)]
 }
 
 // 通讯录联系人接口
@@ -528,6 +547,63 @@ export const useAppStore = defineStore('app', () => {
     }
   }
 
+  // 根据 avatarIdx 查找联系人
+  const findContactByAvatarIdx = (avatarIdx: number): ContactItem | null => {
+    for (const group of contactGroups.value) {
+      const contact = group.list.find(item => item.avatarIdx === avatarIdx)
+      if (contact) {
+        return contact
+      }
+    }
+    return null
+  }
+
+  // 进入聊天 - 通过已有 chatId（聊天列表入口）
+  const enterChatById = (id: number): number => {
+    clearUnread(id)
+    return id
+  }
+
+  // 进入聊天 - 通过联系人名称和头像（资料页入口）
+  // 查找已有聊天或创建新聊天，同步头像并清空未读
+  const enterChatByContact = (name: string, avatar: string): number => {
+    // 先查找已有聊天
+    const existing = chatList.value.find(item => item.name === name)
+    if (existing) {
+      // 同步头像保持一致
+      existing.avatar = avatar
+      clearUnread(existing.id)
+      return existing.id
+    }
+    // 创建新聊天
+    const maxId = chatList.value.reduce((max, item) => Math.max(max, item.id), 0)
+    const now = new Date()
+    const timeStr = `${now.getMonth() + 1}月${now.getDate()}日 ${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`
+    const newChat: ChatListItem = {
+      id: maxId + 1,
+      name,
+      avatar,
+      messages: [
+        // 打招呼消息
+        { content: getRandomGreeting(), isFriend: true, time: timeStr, showTime: true },
+        // 系统提示
+        { content: `你已添加了${name}，以上是打招呼的消息。`, isFriend: false, time: '', showTime: false, type: 'system' },
+      ],
+      unread: 0,
+      top: false,
+    }
+    // 插入到置顶项之后、非置顶项之前
+    const firstNonTopIdx = chatList.value.findIndex(item => !item.top)
+    if (firstNonTopIdx === -1) {
+      chatList.value.push(newChat)
+    }
+    else {
+      chatList.value.splice(firstNonTopIdx, 0, newChat)
+    }
+    console.log('New chat created:', newChat)
+    return newChat.id
+  }
+
   return {
     needAnimate,
     directionName,
@@ -541,6 +617,9 @@ export const useAppStore = defineStore('app', () => {
     getChatList,
     getLastMessage,
     contactGroups,
+    findContactByAvatarIdx,
+    enterChatById,
+    enterChatByContact,
     setNeedAnimate,
     setUserInfo,
     setDirectionName,

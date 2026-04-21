@@ -211,9 +211,8 @@ function getLastMessageTime(item: ChatListItem): string {
 
 // 进入聊天页面
 function goToChat(id: number) {
-  // 清空未读
-  appStore.clearUnread(id)
-  router.push(`/chat/${id}`)
+  const chatId = appStore.enterChatById(id)
+  router.push(`/chat/${chatId}`)
 }
 
 // 长按开始

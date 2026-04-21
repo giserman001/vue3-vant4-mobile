@@ -36,8 +36,13 @@
           <span class="text-xs text-gray-400">{{ msg.time }}</span>
         </div>
 
+        <!-- 系统提示消息（居中灰色文字，无头像无气泡） -->
+        <div v-if="msg.type === 'system'" class="flex justify-center py-1">
+          <span class="text-xs text-[#b2b2b2] leading-5">{{ msg.content }}</span>
+        </div>
+
         <!-- 好友消息 (左侧) -->
-        <div v-if="msg.isFriend" class="flex items-start gap-2.5">
+        <div v-else-if="msg.isFriend" class="flex items-start gap-2.5">
           <img :src="currentFriend.avatar" class="h-10 w-10 flex-shrink-0 rounded-md object-cover">
           <div class="max-w-[70%] flex flex-col gap-1">
             <div class="rounded-r-lg rounded-bl-lg bg-white px-3 py-2.5 text-base text-black leading-relaxed shadow-sm dark:bg-[#2c2c2c] dark:text-white">

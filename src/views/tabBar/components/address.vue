@@ -49,7 +49,8 @@
         <div
           v-for="(item, idx) in group.list"
           :key="item.name"
-          class="flex items-center pl-12px"
+          class="flex items-center pl-12px active:bg-[#ECECEC]"
+          @click="router.push(`/userProfile/${item.avatarIdx}`)"
         >
           <img :src="getAvatarImg(item.avatarIdx)" alt="" class="mr-12px h-40px w-40px shrink-0 rounded-6px">
           <div
