@@ -220,6 +220,7 @@ const greetingMessages = [
   '你好，很高兴能加你好友',
   '哈喽，终于加上你了！',
   'Hi，我是你的新朋友！',
+  'V2商城咨询',
 ]
 
 function getRandomGreeting(): string {
