@@ -8,7 +8,7 @@
         class="flex items-center pl-12px"
         @click="item.onClick"
       >
-        <img :src="item.icon" alt="" class="mr-12px h-40px w-40px shrink-0 rounded-6px">
+        <img :src="item.icon" alt="" loading="lazy" class="mr-12px h-40px w-40px shrink-0 rounded-6px">
         <div
           class="h-60px min-w-0 flex flex-1 items-center pr-12px"
           :class="idx < topList.length - 1 ? 'border-b border-b-[#ECECEC]' : ''"
@@ -30,7 +30,7 @@
         :key="item.name"
         class="flex items-center pl-12px"
       >
-        <img :src="item.icon" alt="" class="mr-12px h-40px w-40px shrink-0 rounded-6px">
+        <img :src="item.icon" alt="" loading="lazy" class="mr-12px h-40px w-40px shrink-0 rounded-6px">
         <div
           class="h-60px min-w-0 flex flex-1 items-center pr-12px"
           :class="idx < indexList1[0].list.length - 1 ? 'border-b border-b-[#ECECEC]' : ''"
@@ -52,7 +52,7 @@
           class="flex items-center pl-12px active:bg-[#ECECEC]"
           @click="router.push(`/userProfile/${item.avatarIdx}`)"
         >
-          <img :src="getAvatarImg(item.avatarIdx)" alt="" class="mr-12px h-40px w-40px shrink-0 rounded-6px">
+          <img :src="getAvatarImg(item.avatarIdx)" alt="" loading="lazy" class="mr-12px h-40px w-40px shrink-0 rounded-6px">
           <div
             class="h-60px min-w-0 flex flex-1 items-center pr-12px"
             :class="idx < group.list.length - 1 ? 'border-b border-b-[#ECECEC]' : ''"

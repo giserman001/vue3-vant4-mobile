@@ -4,7 +4,7 @@
     <div class="bg-white px-16px pb-20px pt-48px">
       <div class="flex items-center">
         <!-- 头像 -->
-        <img :src="userInfo.avatar" alt="" class="mr-16px h-64px w-64px shrink-0 rounded-8px">
+        <img :src="userInfo.avatar" alt="" loading="lazy" class="mr-16px h-64px w-64px shrink-0 rounded-8px">
         <!-- 用户信息 -->
         <div class="min-w-0 flex-1">
           <div class="flex items-center justify-between">
@@ -24,9 +24,9 @@
         </div>
         <div class="h-32px flex items-center border border-[#E0E0E0] rounded-full px-12px text-14px text-[#888]">
           <div class="mr-4px flex items-center">
-            <img src="@/assets/images/head-portrait/1.jpg" alt="" class="h-20px w-20px border-2 border-white rounded-full -mr-8px">
-            <img src="@/assets/images/head-portrait/2.jpg" alt="" class="h-20px w-20px border-2 border-white rounded-full -mr-8px">
-            <img src="@/assets/images/head-portrait/3.jpg" alt="" class="h-20px w-20px border-2 border-white rounded-full">
+            <img src="@/assets/images/head-portrait/1.jpg" alt="" loading="lazy" class="h-20px w-20px border-2 border-white rounded-full -mr-8px">
+            <img src="@/assets/images/head-portrait/2.jpg" alt="" loading="lazy" class="h-20px w-20px border-2 border-white rounded-full -mr-8px">
+            <img src="@/assets/images/head-portrait/3.jpg" alt="" loading="lazy" class="h-20px w-20px border-2 border-white rounded-full">
           </div>
           <span>等7个朋友</span>
           <span class="ml-4px h-6px w-6px rounded-full bg-red-500" />

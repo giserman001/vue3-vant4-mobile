@@ -49,7 +49,7 @@
           :key="item.uuid"
           class="flex items-start border-b-[0.5px] border-b-[#ededed] border-b-solid px-12px pt-14px"
         >
-          <img class="h-40px w-40px shrink-0 rounded-6px object-cover" :src="item.avatar">
+          <img class="h-40px w-40px shrink-0 rounded-6px object-cover" :src="item.avatar" loading="lazy">
           <div class="ml-10px flex-1 pb-14px">
             <div class="text-15px text-[#576b95] font-500 leading-[1.3]">
               {{ item.name }}
@@ -73,6 +73,7 @@
                 v-if="item.img.length === 1"
                 class="max-h-200px max-w-200px rounded-4px object-cover"
                 :src="item.img[0]"
+                loading="lazy"
                 @click="priviewImg(item.img, 0)"
               >
               <template v-else>

@@ -22,7 +22,7 @@
         >
           <!-- 头像 -->
           <div class="relative mr-12px shrink-0 pb-12px">
-            <img :src="item.avatar" alt="头像" class="h-48px w-48px rounded-4px">
+            <img :src="item.avatar" alt="头像" loading="lazy" class="h-48px w-48px rounded-4px">
             <!-- 未读徽章 -->
             <span
               v-if="item.unread > 0"

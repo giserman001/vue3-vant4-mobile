@@ -7,7 +7,7 @@
         <div class="h-56px flex flex-1 items-center pr-12px">
           <span class="flex-1 text-17px text-[#000]">朋友圈</span>
           <div class="relative mr-8px">
-            <img src="@/assets/images/head-portrait/1.jpg" alt="" class="h-32px w-32px rounded-4px">
+            <img src="@/assets/images/head-portrait/1.jpg" alt="" loading="lazy" class="h-32px w-32px rounded-4px">
             <span class="absolute h-8px w-8px rounded-full bg-red-500 -right-2px -top-2px" />
           </div>
           <van-icon name="arrow" color="#C8C8C8" size="16" />

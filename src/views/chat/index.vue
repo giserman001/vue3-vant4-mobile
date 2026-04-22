@@ -43,7 +43,7 @@
 
         <!-- 好友消息 (左侧) -->
         <div v-else-if="msg.isFriend" class="flex items-start gap-2.5">
-          <img :src="currentFriend.avatar" class="h-10 w-10 flex-shrink-0 rounded-md object-cover">
+          <img :src="currentFriend.avatar" loading="lazy" class="h-10 w-10 flex-shrink-0 rounded-md object-cover">
           <div class="max-w-[70%] flex flex-col gap-1">
             <div class="rounded-r-lg rounded-bl-lg bg-white px-3 py-2.5 text-base text-black leading-relaxed shadow-sm dark:bg-[#2c2c2c] dark:text-white">
               {{ msg.content }}
@@ -53,7 +53,7 @@
 
         <!-- 自己消息 (右侧) -->
         <div v-else class="flex flex-row-reverse items-start gap-2.5">
-          <img :src="selfAvatar" class="h-10 w-10 flex-shrink-0 rounded-md object-cover">
+          <img :src="selfAvatar" loading="lazy" class="h-10 w-10 flex-shrink-0 rounded-md object-cover">
           <div class="max-w-[70%] flex flex-col items-end gap-1">
             <div class="rounded-l-lg rounded-br-lg bg-[#95ec69] px-3 py-2.5 text-base text-black leading-relaxed shadow-sm dark:bg-[#7cb342]">
               {{ msg.content }}

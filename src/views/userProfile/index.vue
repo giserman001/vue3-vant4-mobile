@@ -25,6 +25,7 @@
         <img
           :src="userInfo.avatar"
           class="h-16.5 w-16.5 rounded-lg object-cover"
+          loading="lazy"
           alt="avatar"
         >
         <!-- 信息 -->
@@ -83,6 +84,7 @@
               v-for="(img, idx) in userInfo.moments.slice(0, 4)"
               :key="idx"
               :src="img"
+              loading="lazy"
               class="h-11.5 w-11.5 rounded-sm object-cover"
             >
           </div>
@@ -103,6 +105,7 @@
             <div class="flex gap-1">
               <img
                 v-for="(img, idx) in userInfo.videos.slice(0, 4)" :key="idx" :src="img"
+                loading="lazy"
                 class="h-11.5 w-11.5 rounded-sm object-cover"
               >
             </div>
